@@ -1,0 +1,8 @@
+# Byte-compiled / optimized / DLL files
+*.py[cd]
+
+# Distribution / packaging
+*.egg-info/
+
+# Data files
+examples/*/obs.dat

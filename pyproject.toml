@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ddrelocator"
+readme = "README.md"
+dependencies = [
+	"matplotlib",
+	"numpy",
+	"obspy",
+	"pandas",
+]
+dynamic = ["version"]
+
+[tool.isort]
+profile = "black"
+skip_gitignore = true
+known_third_party = "ddrelocator"
