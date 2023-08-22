@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from ddrelocator.ddrelocator import Obs
-from ddrelocator.helpers import get_ttime_slowness, dump_obslist
+from ddrelocator.helpers import dump_obslist, get_ttime_slowness
 from obspy import UTCDateTime, read
 from obspy.geodetics import gps2dist_azimuth, kilometers2degrees
 from obspy.signal.cross_correlation import correlate, correlate_template, xcorr_max
