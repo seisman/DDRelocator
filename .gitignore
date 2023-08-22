@@ -4,5 +4,8 @@
 # Distribution / packaging
 *.egg-info/
 
+# Jupyerter Notebooks
+.ipynb_checkpoints/
+
 # Data files
 examples/*/obs.dat
