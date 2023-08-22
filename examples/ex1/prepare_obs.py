@@ -44,14 +44,14 @@ for sta in stations:
     )[0:2]
     dist = kilometers2degrees(dist / 1000.0)  # convert distance from m to degree
     # get phase name, travel time, horizontal slowness and vertical slowness
-    phasename, t0, dtdd, dtdh = get_ttime_slowness(model, master.depth, dist, phase)
+    phasename, t0, dtdd, dtdh = get_ttime_slowness(model, master.depth, dist, [phase])
 
     # calculate the traveltime of the slave event
     dist1 = gps2dist_azimuth(
         slave.latitude, slave.longitude, sta.latitude, sta.longitude
     )[0]
     dist1 = kilometers2degrees(dist1 / 1000.0)
-    t1 = get_ttime_slowness(model, slave.depth, dist1, phase)[1]
+    t1 = get_ttime_slowness(model, slave.depth, dist1, [phase])[1]
 
     # Theoretical traveltime difference between the master and slave events.
     dt = t1 - t0
@@ -64,6 +64,7 @@ for sta in stations:
             dist,
             az,
             phasename,
+            t0,
             dtdd,
             dtdh,
             dt,

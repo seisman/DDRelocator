@@ -8,7 +8,7 @@ import pandas as pd
 from ddrelocator.ddrelocator import Obs
 
 
-def get_ttime_slowness(model, depth, distance, phase):
+def get_ttime_slowness(model, depth, distance, phase_list):
     """
     Get travel time, horizontal slowness, and vertical slowness for a given phase.
 
@@ -20,8 +20,8 @@ def get_ttime_slowness(model, depth, distance, phase):
         Source depth in km.
     distance : float
         Epicentral distance in degree.
-    phase : str
-        Phase name.
+    phase_list : str
+        List of phases.
 
     Returns
     -------
@@ -43,17 +43,17 @@ def get_ttime_slowness(model, depth, distance, phase):
     arrivals = model.get_travel_times(
         source_depth_in_km=depth,
         distance_in_degree=distance,
-        phase_list=[phase],
+        phase_list=phase_list,
         receiver_depth_in_km=0.0,  # assuming receiver at surface
         ray_param_tol=1.0e-5,  # small tolerance to have better precision?
     )
 
     if len(arrivals) == 0:
-        msg = f"No {phase} arrival found for depth={depth} and distance={distance}."
+        msg = f"No arrival found for depth={depth} and distance={distance}."
         raise ValueError(msg)
     elif len(arrivals) > 1:
         warnings.warn(
-            f"More than one {phase} arrivals found for depth={depth} and distance={distance}. "
+            f"More than one arrivals found for depth={depth} and distance={distance}. "
             + "The first one is used."
         )
 
@@ -83,12 +83,14 @@ def dump_obslist(obslist, filename):
         Output filename.
     """
     with open(filename, "w") as f:
-        f.write("station latitude longitude distance azimuth phase dtdd dtdh dt use\n")
+        f.write(
+            "station latitude longitude distance azimuth phase time dtdd dtdh dt use\n"
+        )
         for obs in obslist:
             f.write(
                 f"{obs.station} {obs.latitude:.4f} {obs.longitude:.4f} "
                 + f"{obs.distance:.4f} {obs.azimuth:.2f} "
-                + f"{obs.phase} {obs.dtdd:.4f} {obs.dtdh:.4f} {obs.dt:.3f} "
+                + f"{obs.phase} {obs.time:.4f} {obs.dtdd:.4f} {obs.dtdh:.4f} {obs.dt:.3f} "
                 + f"{obs.use}\n"
             )
 
@@ -113,6 +115,7 @@ def read_obslist(filename):
                 row["distance"],
                 row["azimuth"],
                 row["phase"],
+                row["time"],
                 row["dtdd"],
                 row["dtdh"],
                 row["dt"],

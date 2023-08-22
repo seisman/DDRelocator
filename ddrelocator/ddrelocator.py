@@ -80,6 +80,7 @@ class Obs:
         distance,
         azimuth,
         phase,
+        time,
         dtdd,
         dtdh,
         dt,
@@ -100,6 +101,8 @@ class Obs:
             Azimuth from master event to station in degrees.
         phase : str
             Phase name.
+        time : float
+            Predicted travel time in second.
         dtdd : float
             Horizontal slowness in s/deg.
         dtdh : float
@@ -122,6 +125,7 @@ class Obs:
         self.distance = distance
         self.azimuth = azimuth
         self.phase = phase
+        self.time = time
         self.dtdd = dtdd
         self.dtdh = dtdh
         self.dt = dt
@@ -209,7 +213,7 @@ def try_solution(obslist, sol):
         )[0]
         distance = kilometers2degrees(distance / 1000.0)
         obs.dt_pre = obs.dtdd * (distance - obs.distance) + obs.dtdh * sol.ddepth
-        obs.residual = obs.dt_pre - obs.dt
+        obs.residual = obs.dt - obs.dt_pre
 
     # only use the observations with use=1 when calculating the mean and RMS.
     obslist_use = [obs for obs in obslist if obs.use == 1]
