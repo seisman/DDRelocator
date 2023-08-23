@@ -10,7 +10,7 @@ from ddrelocator.headers import Solution
 from ddrelocator.helpers import distaz
 
 
-def try_solution(obslist, sol):
+def try_solution(obslist, sol, keep_residual=False):
     """
     Calculate the RMS of traveltime residuals for a given solution.
 
@@ -20,24 +20,28 @@ def try_solution(obslist, sol):
         List of Obs objects.
     sol : Solution
         The solution to be tested.
+    keep_residual : bool, optional
+        If True, keep the dt_pre and residual in the Obs object.
     """
-    # loop over all observations and calculate the predicted travel time difference
-    # and traveltime difference residual
+    # For all observations, calculate predicted traveltime difference and residual
     for obs in obslist:
         distance = distaz(sol.latitude, sol.longitude, obs.latitude, obs.longitude)[0]
         obs.dt_pre = obs.dtdd * (distance - obs.distance) + obs.dtdh * sol.ddepth
         obs.residual = obs.dt - obs.dt_pre
 
-    # only use the observations with use=1 when calculating the mean and RMS.
-    obslist_use = [obs for obs in obslist if obs.use == 1]
-    sol.tmean = np.mean([obs.residual for obs in obslist_use])
+    # Only observations with use=1 are used to calculate the mean and RMS.
+    residuals = np.array([obs.residual for obs in obslist if obs.use == 1])
+    # tmean is regarded as the origin time correction
+    sol.tmean = residuals.mean()
+    sol.misfit = np.sqrt(np.mean((residuals - sol.tmean) ** 2.0))
 
-    # tmean is regarded as the origin time correction. so remove it from all residuals.
-    for obs in obslist:
-        obs.residual -= sol.tmean
-
-    # determine the RMS misfit of the residuals
-    sol.misfit = np.sqrt(np.mean([obs.residual**2.0 for obs in obslist_use]))
+    # keep dt_pre and residual in the obs object or not
+    if keep_residual:
+        for obs in obslist:
+            obs.residual -= sol.tmean
+    else:
+        for obs in obslist:
+            del obs.residual, obs.dt_pre
 
 
 def gridsearch(master, obslist, params):

@@ -47,7 +47,7 @@ sol = Solution(
     master=ev1,
 )
 
-try_solution(obslist, sol)
+try_solution(obslist, sol, keep_residual=True)
 for obs in obslist:
     obs.residual += sol.tmean
 sol.tmean = tmean  # force the tmean to the reported value

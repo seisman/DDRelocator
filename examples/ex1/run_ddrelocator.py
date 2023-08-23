@@ -43,8 +43,9 @@ sol = find_best_solution(solutions)
 # 2. Just try a solution
 # sol = Solution(-0.001, 0.002, 0.0, master)
 
-# Call the try_solution function again to update the residuals saved in obs
-try_solution(obslist, sol)
+# Call the try_solution function with the given solution and keep predicted
+# traveltime difference and residual in obs
+try_solution(obslist, sol, keep_residual=True)
 
 print(
     f"Best solution: {sol.latitude:.5f} {sol.longitude:.5f} {sol.depth:.2f} {sol.tmean:.3g}"
