@@ -1,48 +1,97 @@
 """
 Visualization functions.
 """
-
 import matplotlib.pyplot as plt
 import numpy as np
 
 
-def plot_dt(obslist, master, show_unused=False):
+def plot_dt_as_azimuth(ax, obslist, residual=False, show_unused=False):
     """
-    Plot the travel time differences of observations.
+    Plot the travel time differences/residuals as a function of azimuth.
+
+    Parameters
+    ----------
+    ax : matplotlib.axes.Axes
+        Axes object to plot.
+    obslist : list of Obs
+        List of observations.
+    residual : bool, optional
+        If True, plot residuals. Else, plot travel time differences.
+    show_unused : bool, optional
+        If True, show unused observations.
     """
-    fig, axs = plt.subplots(1, 2, figsize=(10, 5))
+    usemask = np.array([i.use for i in obslist], dtype=bool)
+    az = np.array([i.azimuth for i in obslist])
+    if residual:
+        dt = np.array([i.residual for i in obslist])
+        title = "Residual vs azimuth"
+        ylabel = "Residual (s)"
+    else:
+        dt = np.array([i.dt for i in obslist])
+        title = "dt vs azimuth"
+        ylabel = "dt (s)"
 
-    # Geographic distribution of traveltime differences.
-    latitudes = np.array([i.latitude for i in obslist if i.use == 1])
-    longitudes = np.array([i.longitude for i in obslist if i.use == 1])
-    dt = np.array([i.dt for i in obslist if i.use == 1])
-    az = np.array([i.azimuth for i in obslist if i.use == 1])
-    labels = np.array([f"{i.station}({i.phase})" for i in obslist if i.use == 1])
+    ax.scatter(az[usemask], dt[usemask], s=25, marker="o")
+    if show_unused:
+        ax.scatter(az[~usemask], dt[~usemask], s=25, marker="o", c="gray", alpha=0.5)
 
-    ax = axs[0]
+    ax.set_xlabel("Azimuth (deg)")
+    ax.set_ylabel(ylabel)
+    ax.set_title(title)
+
+
+def plot_dt_on_map(ax, obslist, master, slave=None, residual=False, show_unused=False):
+    """
+    Plot the travel time differences/residuals of observations on a map.
+
+    Parameters
+    ----------
+    ax : matplotlib.axes.Axes
+        Axes object to plot.
+    obslist : list of Obs
+        List of observations.
+    master : Event
+        Master event.
+    slave : Event, optional
+        Slave event.
+    residual : bool, optional
+        If True, plot residuals. Else, plot travel time differences.
+    show_unused : bool, optional
+        If True, show unused observations.
+    """
+    usemask = np.array([i.use for i in obslist], dtype=bool)
+    latitudes = np.array([i.latitude for i in obslist])
+    longitudes = np.array([i.longitude for i in obslist])
+    labels = np.array([f"{i.station}({i.phase})" for i in obslist])
+    if residual:
+        dt = np.array([i.residual for i in obslist])
+        title = "Residuals"
+    else:
+        dt = np.array([i.dt for i in obslist])
+        title = "Travel time differences"
+
     factor = 100 / np.abs(dt).max()
-    # plot positive traveltime differences
+    # plot positive dt
     ax.scatter(
-        longitudes[dt >= 0],
-        latitudes[dt >= 0],
-        s=dt[dt >= 0] * factor,
+        longitudes[usemask & (dt >= 0)],
+        latitudes[usemask & (dt >= 0)],
+        s=dt[usemask & (dt >= 0)] * factor,
         edgecolors="r",
         facecolors="none",
         marker="o",
     )
-    # plot negative traveltime differences
+    # plot negative dt
     ax.scatter(
-        longitudes[dt < 0],
-        latitudes[dt < 0],
-        s=abs(dt[dt < 0]) * factor,
+        longitudes[usemask & (dt < 0)],
+        latitudes[usemask & (dt < 0)],
+        s=abs(dt[usemask & (dt < 0)]) * factor,
         edgecolors="b",
         facecolors="none",
         marker="s",
     )
-    # plot event location
-    ax.scatter(master.longitude, master.latitude, marker="*", s=100, c="k", alpha=0.5)
-    # plot station names
     for i in range(len(labels)):
+        if not usemask[i]:
+            continue
         ax.annotate(
             labels[i],
             (longitudes[i], latitudes[i]),
@@ -52,42 +101,31 @@ def plot_dt(obslist, master, show_unused=False):
             horizontalalignment="center",
             verticalalignment="top",
         )
-    ax.set_title("Observed traveltime differences")
-
-    # Traveltime differences as a function of azimuth.
-    ax = axs[1]
-    ax.scatter(az, dt, s=25, marker="o")
-    ax.set_xlabel("Azimuth (deg)")
-    ax.set_ylabel("Traveltime difference (s)")
-    ax.set_title("Traveltime differences as a function of azimuth")
 
     if show_unused:
-        latitudes = np.array([i.latitude for i in obslist if i.use == 0])
-        longitudes = np.array([i.longitude for i in obslist if i.use == 0])
-        dt = np.array([i.dt for i in obslist if i.use == 0])
-        az = np.array([i.azimuth for i in obslist if i.use == 0])
-        labels = np.array([f"{i.station}({i.phase})" for i in obslist if i.use == 0])
-
-        ax = axs[0]
+        # plot positive dt
         ax.scatter(
-            longitudes[dt >= 0],
-            latitudes[dt >= 0],
-            s=dt[dt >= 0] * factor,
+            longitudes[~usemask & (dt >= 0)],
+            latitudes[~usemask & (dt >= 0)],
+            s=dt[~usemask & (dt >= 0)] * factor,
             edgecolors="gray",
             facecolors="none",
             marker="o",
             alpha=0.5,
         )
+        # plot negative dt
         ax.scatter(
-            longitudes[dt < 0],
-            latitudes[dt < 0],
-            s=abs(dt[dt < 0]) * factor,
+            longitudes[~usemask & (dt < 0)],
+            latitudes[~usemask & (dt < 0)],
+            s=abs(dt[~usemask & (dt < 0)]) * factor,
             edgecolors="gray",
             facecolors="none",
             marker="s",
             alpha=0.5,
         )
         for i in range(len(labels)):
+            if usemask[i]:
+                continue
             ax.annotate(
                 labels[i],
                 (longitudes[i], latitudes[i]),
@@ -99,62 +137,34 @@ def plot_dt(obslist, master, show_unused=False):
                 verticalalignment="top",
             )
 
-        ax = axs[1]
-        ax.scatter(az, dt, s=25, marker="o", c="gray", alpha=0.5)
+    ax.scatter(master.longitude, master.latitude, marker="*", s=100, c="k", alpha=0.5)
+    if slave is not None:
+        ax.scatter(slave.longitude, slave.latitude, marker="*", s=75, c="r", alpha=0.5)
+    ax.set_title(title)
+
+
+def plot_dt(obslist, master, show_unused=False):
+    """
+    Plot the travel time differences of observations.
+    """
+    fig, axs = plt.subplots(1, 2, figsize=(10, 5))
+
+    plot_dt_on_map(axs[0], obslist, master, residual=False, show_unused=show_unused)
+    plot_dt_as_azimuth(axs[1], obslist, residual=False, show_unused=show_unused)
 
     fig.tight_layout()
     plt.show()
 
 
-def plot_residual(obslist, master, slave):
+def plot_residual(obslist, master, slave, show_unused=False):
     """
     Plot the residuals of observations.
     """
     fig, axs = plt.subplots(1, 2, figsize=(10, 5))
 
-    latitudes = np.array([i.latitude for i in obslist if i.use == 1])
-    longitudes = np.array([i.longitude for i in obslist if i.use == 1])
-    dt = np.array([i.residual for i in obslist if i.use == 1])
-    az = np.array([i.azimuth for i in obslist if i.use == 1])
-    labels = np.array([f"{i.station}({i.phase})" for i in obslist if i.use == 1])
-
-    ax = axs[0]
-    factor = 100 / np.abs(dt).max()
-    ax.scatter(
-        longitudes[dt >= 0],
-        latitudes[dt >= 0],
-        s=dt[dt >= 0] * factor,
-        edgecolors="r",
-        facecolors="none",
-        marker="o",
+    plot_dt_on_map(
+        axs[0], obslist, master, slave=slave, residual=True, show_unused=show_unused
     )
-    ax.scatter(
-        longitudes[dt < 0],
-        latitudes[dt < 0],
-        s=abs(dt[dt < 0]) * factor,
-        edgecolors="b",
-        facecolors="none",
-        marker="s",
-    )
-    for i in range(len(labels)):
-        ax.annotate(
-            labels[i],
-            (longitudes[i], latitudes[i]),
-            fontsize=6,
-            xytext=(0, -5),
-            textcoords="offset points",
-            horizontalalignment="center",
-            verticalalignment="top",
-        )
-    ax.scatter(master.longitude, master.latitude, marker="*", s=100, c="k", alpha=0.5)
-    ax.scatter(slave.longitude, slave.latitude, marker="*", s=100, c="b", alpha=0.5)
-    ax.set_title("After relocation")
-
-    ax = axs[1]
-    ax.scatter(az, dt, s=25, marker="o")
-    ax.set_xlabel("Azimuth (deg)")
-    ax.set_ylabel("Residual (s)")
-    ax.set_title("Residual as a function of azimuth")
-
+    plot_dt_as_azimuth(axs[1], obslist, residual=True, show_unused=show_unused)
     fig.tight_layout()
     plt.show()
