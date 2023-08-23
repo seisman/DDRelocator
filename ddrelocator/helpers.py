@@ -1,6 +1,7 @@
 """
 Helper functions for ddrelocator.
 """
+import pickle
 import warnings
 
 import numpy as np
@@ -160,3 +161,20 @@ def read_obslist(filename):
             )
         )
     return obslist
+
+
+def dump_solutions(solutions, filename):
+    """
+    Dump list of solutions into a file.
+    """
+    with open(filename, "wb") as f:
+        pickle.dump(solutions, f)
+
+
+def load_solutions(filename):
+    """
+    Read list of solutions from a file.
+    """
+    with open(filename, "rb") as f:
+        solutions = pickle.load(f)
+    return solutions
