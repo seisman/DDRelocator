@@ -1,5 +1,5 @@
 """
-A sythetic test for ddrelocator.
+ex1: Run ddrelocator.
 """
 import numpy as np
 from ddrelocator import (
@@ -43,12 +43,13 @@ sol = find_best_solution(solutions)
 # 2. Just try a solution
 # sol = Solution(-0.001, 0.002, 0.0, master)
 
+# Call the try_solution function again to update the residuals saved in obs
+try_solution(obslist, sol)
+
 print(
     f"Best solution: {sol.latitude:.5f} {sol.longitude:.5f} {sol.depth:.2f} {sol.tmean:.3g}"
 )
 print(f"Misfit: {sol.misfit:.3g}")
 
-# Call the try_solution function again to update the residuals saved in obs
-try_solution(obslist, sol)
-
+# visualize the residuals
 plot_residual(obslist, master, slave)
