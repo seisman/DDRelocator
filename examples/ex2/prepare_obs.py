@@ -1,9 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from ddrelocator.ddrelocator import Obs
-from ddrelocator.helpers import dump_obslist, get_ttime_slowness
+from ddrelocator.headers import Obs
+from ddrelocator.helpers import distaz, dump_obslist, get_ttime_slowness
 from obspy import UTCDateTime, read
-from obspy.geodetics import gps2dist_azimuth, kilometers2degrees
 from obspy.signal.cross_correlation import correlate, correlate_template, xcorr_max
 from obspy.taup import TauPyModel
 
@@ -52,10 +51,9 @@ for tr1 in st1:  # loop over traces of the master event
         tr2 = st_match[0]
 
     # calculate distance and azimuth from the master event to the station
-    dist, az = gps2dist_azimuth(
+    dist, az = distaz(
         ev1.latitude, ev1.longitude, tr1.stats.sac.stla, tr1.stats.sac.stlo
-    )[0:2]
-    dist = kilometers2degrees(dist / 1000.0)  # convert distance from m to degree
+    )
 
     phase = ["p", "P", "Pdiff"] if dist < 117 else ["PKP", "PKIKP", "PKiKP"]
 

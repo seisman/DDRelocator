@@ -2,14 +2,8 @@
 A sythetic test for ddrelocator.
 """
 import numpy as np
-from ddrelocator.ddrelocator import (
-    Event,
-    SearchParams,
-    Solution,
-    find_best_solution,
-    gridsearch,
-    try_solution,
-)
+from ddrelocator.ddrelocator import find_best_solution, gridsearch, try_solution
+from ddrelocator.headers import Event, SearchParams, Solution
 from ddrelocator.helpers import read_obslist
 from ddrelocator.plotting import plot_dt, plot_residual
 

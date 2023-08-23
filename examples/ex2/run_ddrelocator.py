@@ -1,12 +1,7 @@
 import numpy as np
 import pandas as pd
-from ddrelocator.ddrelocator import (
-    Event,
-    Obs,
-    SearchParams,
-    find_best_solution,
-    gridsearch,
-)
+from ddrelocator.ddrelocator import find_best_solution, gridsearch
+from ddrelocator.headers import Event, Obs, SearchParams
 from ddrelocator.helpers import read_obslist
 from ddrelocator.plotting import plot_dt, plot_residual
 

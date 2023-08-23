@@ -5,7 +5,38 @@ import warnings
 
 import numpy as np
 import pandas as pd
-from ddrelocator.ddrelocator import Obs
+from ddrelocator.headers import Obs
+from obspy.geodetics import gps2dist_azimuth, kilometers2degrees
+
+
+def distaz(lat1, lon1, lat2, lon2):
+    """
+    Calculate distance (in degree) and azimuth between two geographic points.
+
+    This function is a wrapper of obspy.geodetics.gps2dist_azimuth() and
+    obspy.geodetics.kilometers2degrees().
+
+    Parameters
+    ----------
+    lat1 : float
+        Latitude of point 1 in degree.
+    lon1 : float
+        Longitude of point 1 in degree.
+    lat2 : float
+        Latitude of point 2 in degree.
+    lon2 : float
+        Longitude of point 2 in degree.
+
+    Returns
+    -------
+    dist : float
+        Distance between two points in degree.
+    az : float
+        Azimuth from point 1 to point 2 in degree.
+    """
+    dist, az, _ = gps2dist_azimuth(lat1, lon1, lat2, lon2)
+    dist = kilometers2degrees(dist / 1000.0)
+    return dist, az
 
 
 def get_ttime_slowness(model, depth, distance, phase_list):
