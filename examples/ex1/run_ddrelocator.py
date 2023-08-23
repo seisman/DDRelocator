@@ -2,16 +2,9 @@
 ex1: Run ddrelocator.
 """
 import numpy as np
-from ddrelocator import (
-    Event,
-    SearchParams,
-    Solution,
-    find_best_solution,
-    gridsearch,
-    try_solution,
-)
-from ddrelocator.helpers import read_obslist
-from ddrelocator.plotting import plot_dt, plot_residual
+from ddrelocator import Event, SearchParams, find_best_solution, gridsearch
+from ddrelocator.helpers import dump_solutions, read_obslist
+from ddrelocator.plotting import plot_dt
 
 # Information of the master event [known]
 master = Event("2018-02-01T00:00:00", 36.1688, 139.8075, 53.45, 4.7)
@@ -36,21 +29,13 @@ print(f"Slave event: {slave.latitude:.5f} {slave.longitude:.5f} {slave.depth:.2f
 plot_dt(obslist, master, show_unused=True)
 
 # relocate the slave event relative to the master event
-# 1. Grid search to find the best solution
 print("Grid search...")
 solutions = gridsearch(master, obslist, params)
 sol = find_best_solution(solutions)
-# 2. Just try a solution
-# sol = Solution(-0.001, 0.002, 0.0, master)
-
-# Call the try_solution function with the given solution and keep predicted
-# traveltime difference and residual in obs
-try_solution(obslist, sol, keep_residual=True)
 
 print(
     f"Best solution: {sol.latitude:.5f} {sol.longitude:.5f} {sol.depth:.2f} {sol.tmean:.3g}"
 )
 print(f"Misfit: {sol.misfit:.3g}")
 
-# visualize the residuals
-plot_residual(obslist, master, slave)
+dump_solutions(solutions, "solutions.pkl")
