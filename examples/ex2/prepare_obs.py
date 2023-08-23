@@ -118,4 +118,4 @@ for tr1 in st1:  # loop over traces of the master event
 plt.tight_layout()
 plt.show()
 
-dump_obslist(obslist, "obs-2003-1995.txt")
+dump_obslist(obslist, "obs-2003-1995.dat")

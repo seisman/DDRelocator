@@ -10,7 +10,7 @@ from ddrelocator.ddrelocator import (
 from ddrelocator.helpers import read_obslist
 from ddrelocator.plotting import plot_dt, plot_residual
 
-obslist = read_obslist("obs-2003-1995.txt")
+obslist = read_obslist("obs-2003-1995.dat")
 
 master = Event("2003-07-02T00:47:11.860", -3.643, 102.060, 75.2, 5.1)
 plot_dt(obslist, master)

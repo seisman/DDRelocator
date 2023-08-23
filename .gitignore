@@ -8,7 +8,8 @@
 .ipynb_checkpoints/
 
 # Data files
-examples/**/obs.dat
+examples/**/obs*.dat
 examples/**/*.xml
 examples/**/*.mseed
 examples/**/*.SAC
+examples/**/*.pdf

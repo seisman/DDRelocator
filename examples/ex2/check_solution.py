@@ -26,7 +26,7 @@ ev1 = Event("2003-07-02T00:47:11.860", -3.643, 102.060, 75.2, 5.1)
 ev2 = Event("1995-11-14T06:32:55.750", -3.682, 101.924, 57.0, 5.1)
 
 # read obslist
-obslist = read_obslist("obs-2003-1995.txt")
+obslist = read_obslist("obs-2003-1995.dat")
 
 # Yang et al., 2021, SRL
 """
