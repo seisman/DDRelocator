@@ -1,7 +1,7 @@
 """
 ex1: Prepare synthetic observations.
 """
-from ddrelocator.headers import Event, Obs, Station
+from ddrelocator import Event, Obs, Station
 from ddrelocator.helpers import distaz, dump_obslist, get_ttime_slowness
 from obspy.taup import TauPyModel
 
@@ -74,6 +74,7 @@ for sta in stations:
     )
 
 # 4. Dump the observations into a file.
+#
 # We can use the read_obslist() function to read the observations back from a file to a list.
 # It's useful when we want to modify the observations manually.
 dump_obslist(obslist, "obs.dat")

@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from ddrelocator.headers import Obs
+from ddrelocator import Obs
 from ddrelocator.helpers import distaz, dump_obslist, get_ttime_slowness
 from obspy import UTCDateTime, read
 from obspy.signal.cross_correlation import correlate, correlate_template, xcorr_max

@@ -1,7 +1,7 @@
 # %%
 import matplotlib.pyplot as plt
 import numpy as np
-from ddrelocator.ddrelocator import Solution, try_solution
+from ddrelocator import Solution, try_solution
 from ddrelocator.helpers import read_obslist
 from obspy import UTCDateTime, read
 from obspy.geodetics import kilometers2degrees
