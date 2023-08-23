@@ -1,4 +1,6 @@
-# %%
+"""
+ex2: Check a solution.
+"""
 import matplotlib.pyplot as plt
 import numpy as np
 from ddrelocator import Solution, try_solution

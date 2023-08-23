@@ -1,3 +1,7 @@
+"""
+ex2: Get available broadband stations in 1995.
+"""
+
 from obspy.clients.fdsn import RoutingClient
 
 client = RoutingClient("iris-federator")

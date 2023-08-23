@@ -1,3 +1,6 @@
+"""
+ex2: process miniseed data and save as SAC format.
+"""
 from pathlib import Path
 
 from obspy import UTCDateTime, read, read_inventory

@@ -1,8 +1,10 @@
+"""
+ex2: Run ddrelocator.
+"""
 import numpy as np
-import pandas as pd
-from ddrelocator import Event, Obs, SearchParams, find_best_solution, gridsearch
-from ddrelocator.helpers import read_obslist
-from ddrelocator.plotting import plot_dt, plot_residual
+from ddrelocator import Event, SearchParams, find_best_solution, gridsearch
+from ddrelocator.helpers import dump_solutions, read_obslist
+from ddrelocator.plotting import plot_dt
 
 obslist = read_obslist("obs-2003-1995.dat")
 
@@ -20,3 +22,4 @@ sol = find_best_solution(solutions)
 print(
     f"Best solution: {sol.latitude:.5f} {sol.longitude:.5f} {sol.depth:.2f} {sol.tmean:.3g}"
 )
+dump_solutions(solutions, "solutions.pkl")
