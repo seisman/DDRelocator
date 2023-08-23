@@ -58,7 +58,7 @@ for sta in stations:
 
     obslist.append(
         Obs(
-            sta.station,
+            sta.name,
             sta.latitude,
             sta.longitude,
             dist,

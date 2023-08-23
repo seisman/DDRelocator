@@ -48,7 +48,7 @@ class Station:
     Class for station information.
     """
 
-    def __init__(self, station, latitude, longitude, elevation=0.0):
+    def __init__(self, name, latitude, longitude, elevation=0.0):
         """
         Parameters
         ----------
@@ -61,7 +61,7 @@ class Station:
         elevation : float
             Station elevation (unused).
         """
-        self.station = station
+        self.name = name
         self.latitude = latitude
         self.longitude = longitude
         self.elevation = elevation  # unused
