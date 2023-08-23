@@ -14,6 +14,10 @@ dependencies = [
 ]
 dynamic = ["version"]
 
+[tool.setuptools_scm]
+local_scheme = "node-and-date"
+fallback_version = "999.999.999+unknown"
+
 [tool.isort]
 profile = "black"
 skip_gitignore = true
