@@ -121,7 +121,8 @@ def dump_obslist(obslist, filename):
             f.write(
                 f"{obs.station} {obs.latitude:.4f} {obs.longitude:.4f} "
                 + f"{obs.distance:.4f} {obs.azimuth:.2f} "
-                + f"{obs.phase} {obs.time:.4f} {obs.dtdd:.4f} {obs.dtdh:.4f} {obs.dt:.3f} "
+                + f"{obs.phase} {obs.time:.4f} {obs.dtdd:.4f} {obs.dtdh:.4f} "
+                + f"{obs.dt:.3f} "
                 + f"{obs.use}\n"
             )
 
@@ -134,6 +135,11 @@ def read_obslist(filename):
     ----------
     filename : str
         Input filename.
+
+    Returns
+    -------
+    obslist : list
+        List of Obs objects.
     """
     df = pd.read_csv(filename, delim_whitespace=True, comment="#")
     obslist = []

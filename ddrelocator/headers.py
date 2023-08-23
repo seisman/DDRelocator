@@ -1,3 +1,6 @@
+"""
+Classes for ddrelocator.
+"""
 from obspy import UTCDateTime
 
 
@@ -43,7 +46,7 @@ class Station:
         """
         Parameters
         ----------
-        station : str
+        name : str
             Station name.
         latitude : float
             Station latitude.
