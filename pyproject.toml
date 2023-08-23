@@ -4,8 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ddrelocator"
+description = "A Python package to determine relative location of two nearby earthquakes"
 readme = "README.md"
+requires-python = ">=3.9"
 license = {text = "MIT License"}
+authors = [{name = "Dongdong Tian", email = "dtian@cug.edu.cn"}]
 dependencies = [
 	"matplotlib",
 	"numpy",
@@ -13,6 +16,9 @@ dependencies = [
 	"pandas",
 ]
 dynamic = ["version"]
+
+[tool.setuptools]
+platforms = ["Any"]
 
 [tool.setuptools_scm]
 local_scheme = "node-and-date"
