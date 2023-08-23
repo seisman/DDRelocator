@@ -13,3 +13,4 @@ examples/**/*.xml
 examples/**/*.mseed
 examples/**/*.SAC
 examples/**/*.pdf
+examples/**/*.pkl
