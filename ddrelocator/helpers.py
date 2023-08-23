@@ -83,7 +83,7 @@ def get_ttime_slowness(model, depth, distance, phase_list):
     if len(arrivals) == 0:
         msg = f"No arrival found for depth={depth} and distance={distance}."
         raise ValueError(msg)
-    elif len(arrivals) > 1:
+    if len(arrivals) > 1:
         warnings.warn(
             f"More than one arrivals found for depth={depth} and distance={distance}. "
             + "The first one is used."
@@ -114,7 +114,7 @@ def dump_obslist(obslist, filename):
     filename : str
         Output filename.
     """
-    with open(filename, "w") as f:
+    with open(filename, "w", encoding="utf8") as f:
         f.write(
             "station latitude longitude distance azimuth phase time dtdd dtdh dt use\n"
         )

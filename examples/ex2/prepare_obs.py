@@ -6,7 +6,7 @@ import numpy as np
 from ddrelocator import Obs
 from ddrelocator.helpers import distaz, dump_obslist, get_ttime_slowness
 from obspy import UTCDateTime, read
-from obspy.signal.cross_correlation import correlate, correlate_template, xcorr_max
+from obspy.signal.cross_correlation import correlate_template
 from obspy.taup import TauPyModel
 
 

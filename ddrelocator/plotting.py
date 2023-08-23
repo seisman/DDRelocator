@@ -89,11 +89,11 @@ def plot_dt_on_map(ax, obslist, master, slave=None, residual=False, show_unused=
         facecolors="none",
         marker="s",
     )
-    for i in range(len(labels)):
+    for i, label in enumerate(labels):
         if not usemask[i]:
             continue
         ax.annotate(
-            labels[i],
+            label,
             (longitudes[i], latitudes[i]),
             fontsize=6,
             xytext=(0, -5),
@@ -123,11 +123,11 @@ def plot_dt_on_map(ax, obslist, master, slave=None, residual=False, show_unused=
             marker="s",
             alpha=0.5,
         )
-        for i in range(len(labels)):
+        for i, label in enumerate(labels):
             if usemask[i]:
                 continue
             ax.annotate(
-                labels[i],
+                label,
                 (longitudes[i], latitudes[i]),
                 fontsize=6,
                 color="gray",
