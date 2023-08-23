@@ -1,5 +1,8 @@
 # DDRelocator
 
+![GitHub tag (with filter)](https://img.shields.io/github/v/tag/seisman/DDRelocator)
+![GitHub](https://img.shields.io/github/license/seisman/DDRelocator)
+
 A simple Python package to determine the relative location of two nearby events
 using the master-event algorithm.
 
