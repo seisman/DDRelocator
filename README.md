@@ -11,6 +11,18 @@ using the master-event algorithm.
 The program is written for personal interests only. There is no guarantee that
 that the program works correctly.
 
+## Install
+
+```
+$ git clone https://github.com/seisman/DDRelocator.git
+$ cd DDRelocator
+$ make install
+```
+
+## Usage
+
+See the examples in the `examples` directory.
+
 ## License
 
 The program is licensed under the MIT license. See the LICENSE file for more
