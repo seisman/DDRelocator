@@ -26,5 +26,5 @@ clean:
 	find . -name "*~" -exec rm -v {} +
 	find . -type d -name  "__pycache__" -exec rm -rv {} +
 
-distclean:
+distclean: clean
 	rm -rvf *.egg-info
