@@ -20,7 +20,7 @@ The package depends on the following Python packages:
 - ObsPy
 - Pandas
 
-## Install
+## Installation
 
 ```
 $ git clone https://github.com/seisman/DDRelocator.git
