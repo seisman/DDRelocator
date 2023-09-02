@@ -3,6 +3,7 @@ Visualization functions.
 """
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 
 def plot_dt_as_azimuth(ax, obslist, residual=False, show_unused=False):
@@ -188,5 +189,34 @@ def plot_residual(obslist, master, slave, show_unused=False):
         axs[0], obslist, master, slave=slave, residual=True, show_unused=show_unused
     )
     plot_dt_as_azimuth(axs[1], obslist, residual=True, show_unused=show_unused)
+    fig.tight_layout()
+    plt.show()
+
+
+def plot_misfit(solutions, bestsol):
+    """
+    Plot the misfit of solutions.
+
+    Parameters
+    ----------
+    solutions : list of Solution
+        List of solutions.
+    bestsol : Solution
+        Best solution.
+    """
+    # convert list of solutions to pd.DataFrame
+    df = pd.DataFrame([sol.__dict__ for sol in solutions])
+
+    fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(12, 4))
+    # misfit vary with location
+    df2 = df[df.ddepth == bestsol.ddepth]
+    df2.plot.scatter(x="dlon", y="dlat", c="misfit", colormap="viridis", ax=axes[0])
+
+    df2 = df[df.dlon == bestsol.dlon]
+    df2.plot.scatter(x="dlat", y="ddepth", c="misfit", colormap="viridis", ax=axes[1])
+
+    df2 = df[df.dlat == bestsol.dlat]
+    df2.plot.scatter(x="dlon", y="ddepth", c="misfit", colormap="viridis", ax=axes[2])
+
     fig.tight_layout()
     plt.show()
