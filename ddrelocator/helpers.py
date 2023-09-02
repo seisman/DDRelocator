@@ -44,6 +44,8 @@ def get_ttime_slowness(model, depth, distance, phase_list):
     """
     Get travel time, horizontal slowness, and vertical slowness for a given phase.
 
+    If multiple phases are given or multiple arrivals are found, only the first one is used.
+
     Parameters
     ----------
     model : obspy.taup.TauPyModel
@@ -52,7 +54,7 @@ def get_ttime_slowness(model, depth, distance, phase_list):
         Source depth in km.
     distance : float
         Epicentral distance in degree.
-    phase_list : str
+    phase_list : list of str
         List of phases.
 
     Returns
@@ -119,12 +121,13 @@ def dump_obslist(obslist, filename):
             "station latitude longitude distance azimuth phase time dtdd dtdh dt use\n"
         )
         for obs in obslist:
+            print(obs.use, f"{int(obs.use)}")
             f.write(
                 f"{obs.station} {obs.latitude:.4f} {obs.longitude:.4f} "
                 + f"{obs.distance:.4f} {obs.azimuth:.2f} "
                 + f"{obs.phase} {obs.time:.4f} {obs.dtdd:.4f} {obs.dtdh:.4f} "
                 + f"{obs.dt:.3f} "
-                + f"{obs.use}\n"
+                + f"{int(obs.use)}\n"
             )
 
 
@@ -157,7 +160,7 @@ def read_obslist(filename):
                 row["dtdd"],
                 row["dtdh"],
                 row["dt"],
-                row["use"],
+                bool(row["use"]),
             )
         )
     return obslist
@@ -176,5 +179,4 @@ def load_solutions(filename):
     Read list of solutions from a file.
     """
     with open(filename, "rb") as f:
-        solutions = pickle.load(f)
-    return solutions
+        return pickle.load(f)

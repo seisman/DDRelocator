@@ -1,7 +1,5 @@
 """
-DDRelocator
-
-Determine the relative location of two nearby events using the master-event algorithm.
+Main functions for relocation.
 """
 import itertools
 
@@ -29,9 +27,9 @@ def try_solution(obslist, sol, keep_residual=False):
         obs.dt_pre = obs.dtdd * (distance - obs.distance) + obs.dtdh * sol.ddepth
         obs.residual = obs.dt - obs.dt_pre
 
-    # Only observations with use=1 are used to calculate the mean and RMS.
-    residuals = np.array([obs.residual for obs in obslist if obs.use == 1])
-    # tmean is regarded as the origin time correction
+    # Only observations with use=True are used to calculate the mean and RMS.
+    residuals = np.array([obs.residual for obs in obslist if obs.use])
+    # tmean is taken as the origin time correction
     sol.tmean = residuals.mean()
     sol.misfit = np.sqrt(np.mean((residuals - sol.tmean) ** 2.0))
 

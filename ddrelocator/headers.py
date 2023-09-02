@@ -78,7 +78,7 @@ class Obs:
         dtdd,
         dtdh,
         dt,
-        use=1,
+        use=True,
     ):
         """
         Parameters
@@ -103,8 +103,8 @@ class Obs:
             Vertical slowness in s/km.
         dt : float
             Travel time difference.
-        use : int
-            Use in relocation or not. 0 for not used, 1 for used.
+        use : bool
+            Used in relocation or not. True for use, False for not use.
 
         Attributes
         ----------
@@ -123,7 +123,9 @@ class Obs:
         self.dtdd = dtdd
         self.dtdh = dtdh
         self.dt = dt
-        self.use = use
+        if use not in (True, False, 0, 1):
+            raise ValueError("use must be True or False.")
+        self.use = bool(use)
 
 
 class Solution:

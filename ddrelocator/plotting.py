@@ -20,7 +20,7 @@ def plot_dt_as_azimuth(ax, obslist, residual=False, show_unused=False):
     show_unused : bool, optional
         If True, show unused observations.
     """
-    usemask = np.array([i.use for i in obslist], dtype=bool)
+    usemask = np.array([i.use for i in obslist])
     az = np.array([i.azimuth for i in obslist])
     if residual:
         dt = np.array([i.residual for i in obslist])
@@ -59,7 +59,7 @@ def plot_dt_on_map(ax, obslist, master, slave=None, residual=False, show_unused=
     show_unused : bool, optional
         If True, show unused observations.
     """
-    usemask = np.array([i.use for i in obslist], dtype=bool)
+    usemask = np.array([i.use for i in obslist])
     latitudes = np.array([i.latitude for i in obslist])
     longitudes = np.array([i.longitude for i in obslist])
     labels = np.array([f"{i.station}({i.phase})" for i in obslist])

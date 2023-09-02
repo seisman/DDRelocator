@@ -100,7 +100,7 @@ for tr1 in st1:  # loop over traces of the master event
             dtdd,
             dtdh,
             shift,
-            1,  # use this observation
+            use=True,  # use this observation
         )
     )
 
