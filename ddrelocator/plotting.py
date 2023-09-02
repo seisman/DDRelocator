@@ -69,8 +69,10 @@ def plot_dt_on_map(ax, obslist, master, slave=None, residual=False, show_unused=
     else:
         dt = np.array([i.dt for i in obslist])
         title = "Travel time differences"
+    dt *= 1000  # convert to ms
 
-    factor = 100 / np.abs(dt).max()
+    # scale factor for marker size
+    factor = 200 / max(np.abs(dt).max(), 100)
     # plot positive dt
     ax.scatter(
         longitudes[usemask & (dt >= 0)],
@@ -89,6 +91,7 @@ def plot_dt_on_map(ax, obslist, master, slave=None, residual=False, show_unused=
         facecolors="none",
         marker="s",
     )
+    # Add station labels
     for i, label in enumerate(labels):
         if not usemask[i]:
             continue
@@ -136,6 +139,25 @@ def plot_dt_on_map(ax, obslist, master, slave=None, residual=False, show_unused=
                 horizontalalignment="center",
                 verticalalignment="top",
             )
+
+    # Add legend
+    for dt in [-60, -40, -20, 20, 40, 60]:
+        if dt > 0:
+            edgecolor = "r"
+            marker = "o"
+        else:
+            edgecolor = "b"
+            marker = "s"
+        ax.scatter(
+            [],
+            [],
+            s=abs(dt) * factor,
+            edgecolors=edgecolor,
+            facecolor="none",
+            marker=marker,
+            label=f"{dt} ms",
+        )
+    ax.legend(loc="upper left", scatterpoints=1, fontsize=8)
 
     ax.scatter(master.longitude, master.latitude, marker="*", s=100, c="k", alpha=0.5)
     if slave is not None:
