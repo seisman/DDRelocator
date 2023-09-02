@@ -6,3 +6,6 @@
 3.  `fdsn_get_waveforms.py`: download waveforms at common stations in 1995 and 2003
 4.  `process_data.py`: process waveform data
 5.  `prepare_obs.py`: prepare the observations.
+6.  `run_ddrelocator.py`: run the ddrelocator program
+7.  `check_solution.py`: check a solution
+8.  `check_misfit.py`: visualize the misfit
