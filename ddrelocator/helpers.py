@@ -121,12 +121,11 @@ def dump_obslist(obslist, filename):
             "station latitude longitude distance azimuth phase time dtdd dtdh dt use\n"
         )
         for obs in obslist:
-            print(obs.use, f"{int(obs.use)}")
             f.write(
-                f"{obs.station} {obs.latitude:.4f} {obs.longitude:.4f} "
-                + f"{obs.distance:.4f} {obs.azimuth:.2f} "
-                + f"{obs.phase} {obs.time:.4f} {obs.dtdd:.4f} {obs.dtdh:.4f} "
-                + f"{obs.dt:.3f} "
+                f"{obs.station} {obs.latitude:.5f} {obs.longitude:.5f} "
+                + f"{obs.distance:.5f} {obs.azimuth:.2f} "
+                + f"{obs.phase} {obs.time:.5f} {obs.dtdd:.5f} {obs.dtdh:.5f} "
+                + f"{obs.dt:.5f} "
                 + f"{int(obs.use)}\n"
             )
 
