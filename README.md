@@ -11,6 +11,15 @@ using the master-event algorithm.
 The program is written for personal interests only. There is no guarantee that
 that the program works correctly.
 
+## Dependencies
+
+The package depends on the following Python packages:
+
+- Matplotlib
+- NumPy
+- ObsPy
+- Pandas
+
 ## Install
 
 ```
