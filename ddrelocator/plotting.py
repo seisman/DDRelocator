@@ -211,12 +211,15 @@ def plot_misfit(solutions, bestsol):
     # misfit vary with location
     df2 = df[df.ddepth == bestsol.ddepth]
     df2.plot.scatter(x="dlon", y="dlat", c="misfit", colormap="viridis", ax=axes[0])
+    axes[0].scatter(bestsol.dlon, bestsol.dlat, marker="*", facecolor="r")
 
     df2 = df[df.dlon == bestsol.dlon]
     df2.plot.scatter(x="dlat", y="ddepth", c="misfit", colormap="viridis", ax=axes[1])
+    axes[1].scatter(bestsol.dlat, bestsol.ddepth, marker="*", facecolor="r")
 
     df2 = df[df.dlat == bestsol.dlat]
     df2.plot.scatter(x="dlon", y="ddepth", c="misfit", colormap="viridis", ax=axes[2])
+    axes[2].scatter(bestsol.dlon, bestsol.ddepth, marker="*", facecolor="r")
 
     fig.tight_layout()
     plt.show()
