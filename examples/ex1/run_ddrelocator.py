@@ -16,9 +16,9 @@ obslist = read_obslist("obs.dat")
 
 # search parameters
 params = SearchParams(
-    dlats=np.arange(-0.05, 0.05, 0.001),
-    dlons=np.arange(-0.05, 0.05, 0.001),
-    ddeps=np.arange(-2, 2, 1.0),
+    dlats=np.arange(-0.02, 0.02, 0.001),
+    dlons=np.arange(-0.02, 0.02, 0.001),
+    ddeps=np.arange(-2, 2, 0.1),
 )
 
 print("Ex1 for ddrelocator")
