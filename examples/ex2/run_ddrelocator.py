@@ -1,6 +1,8 @@
 """
 ex2: Run ddrelocator.
 """
+import time
+
 import numpy as np
 from ddrelocator import Event, SearchParams, find_best_solution, gridsearch
 from ddrelocator.helpers import dump_solutions, read_obslist
@@ -17,7 +19,10 @@ params = SearchParams(
     ddeps=np.arange(-1, 1, 0.2),
 )
 
+print("Grid search...  ", end="")
+start = time.time()
 solutions = gridsearch(master, obslist, params)
+print(f"Done in {time.time() - start:.1f} sec")
 sol = find_best_solution(solutions)
 print(
     f"Best solution: {sol.latitude:.5f} {sol.longitude:.5f} {sol.depth:.2f} {sol.tmean:.3g}"

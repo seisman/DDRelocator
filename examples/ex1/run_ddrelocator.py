@@ -1,6 +1,8 @@
 """
 ex1: Run ddrelocator.
 """
+import time
+
 import numpy as np
 from ddrelocator import Event, SearchParams, find_best_solution, gridsearch
 from ddrelocator.helpers import dump_solutions, read_obslist
@@ -29,8 +31,10 @@ print(f"Slave event: {slave.latitude:.5f} {slave.longitude:.5f} {slave.depth:.2f
 plot_dt(obslist, master, show_unused=True)
 
 # relocate the slave event relative to the master event
-print("Grid search...")
+print("Grid search...  ", end="")
+start = time.time()
 solutions = gridsearch(master, obslist, params)
+print(f"Done in {time.time() - start:.1f} sec")
 sol = find_best_solution(solutions)
 
 print(
