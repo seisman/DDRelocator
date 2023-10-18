@@ -6,6 +6,7 @@ import itertools
 import numpy as np
 from ddrelocator.headers import Solution
 from ddrelocator.helpers import distaz
+from scipy.optimize import brute
 
 
 def try_solution(obslist, sol, keep_residual=False):
@@ -42,6 +43,48 @@ def try_solution(obslist, sol, keep_residual=False):
             del obs.residual, obs.dt_pre
 
 
+# def gridsearch(master, obslist, params):
+#     """
+#     Grid search all possible solutions.
+
+#     Parameters
+#     ----------
+#     master : Event
+#         Master event.
+#     obslist : list
+#         List of Obs objects.
+#     params : SearchParams
+#         Search parameters.
+
+#     Returns
+#     -------
+#     solutions : list
+#         List of Solution objects.
+#     """
+#     solutions = []
+#     for ddep, dlat, dlon in itertools.product(params.ddeps, params.dlats, params.dlons):
+#         sol = Solution(dlat, dlon, ddep, master)
+#         try_solution(obslist, sol)
+#         solutions.append(sol)
+#     return solutions
+
+# def find_best_solution(solutions):
+#     """
+#     Find the best solution.
+
+#     Parameters
+#     ----------
+#     solutions : list
+#         List of Solution objects.
+
+#     Returns
+#     -------
+#     best : Solution
+#         Best Solution object.
+#     """
+#     idx = np.argmin([i.misfit for i in solutions])
+#     return solutions[idx]
+
 def gridsearch(master, obslist, params):
     """
     Grid search all possible solutions.
@@ -60,27 +103,29 @@ def gridsearch(master, obslist, params):
     solutions : list
         List of Solution objects.
     """
-    solutions = []
-    for ddep, dlat, dlon in itertools.product(params.ddeps, params.dlats, params.dlons):
+    def try_solution_wrapper(args):
+        dlat, dlon, ddep = args
         sol = Solution(dlat, dlon, ddep, master)
         try_solution(obslist, sol)
-        solutions.append(sol)
-    return solutions
+        return sol.misfit
 
+    result = brute(
+        func=try_solution_wrapper, 
+        ranges=(params.dlats, params.dlons, params.ddeps), 
+        full_output=True, 
+    )
+    return result
 
-def find_best_solution(solutions):
-    """
-    Find the best solution.
+    # solutions = []
+    # for i in range(result[0].shape[0]):
+    #     dlat, dlon, ddep = result[0][i]
+    #     sol = Solution(dlat, dlon, ddep, master)
+    #     try_solution(obslist, sol)
+    #     solutions.append(sol)
 
-    Parameters
-    ----------
-    solutions : list
-        List of Solution objects.
+    # return solutions
 
-    Returns
-    -------
-    best : Solution
-        Best Solution object.
-    """
-    idx = np.argmin([i.misfit for i in solutions])
-    return solutions[idx]
+def find_best_solution(result, master):
+    dlat, dlon, ddep = result[0]
+    return Solution(dlat, dlon, ddep, master)
+

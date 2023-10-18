@@ -4,7 +4,7 @@ ex1: Run ddrelocator.
 import time
 
 import numpy as np
-from ddrelocator import Event, SearchParams, find_best_solution, gridsearch
+from ddrelocator import Event, SearchParams, find_best_solution, gridsearch, try_solution
 from ddrelocator.helpers import dump_solutions, read_obslist
 from ddrelocator.plotting import plot_dt
 
@@ -18,9 +18,9 @@ obslist = read_obslist("obs.dat")
 
 # search parameters
 params = SearchParams(
-    dlats=np.arange(-0.02, 0.02, 0.001),
-    dlons=np.arange(-0.02, 0.02, 0.001),
-    ddeps=np.arange(-2, 2, 0.1),
+    dlats=slice(-0.02, 0.02, 0.001),
+    dlons=slice(-0.02, 0.02, 0.001),
+    ddeps=slice(-2, 2, 0.1),
 )
 
 print("Ex1 for ddrelocator")
@@ -33,13 +33,14 @@ plot_dt(obslist, master, show_unused=True)
 # relocate the slave event relative to the master event
 print("Grid search...  ", end="")
 start = time.time()
-solutions = gridsearch(master, obslist, params)
+result = gridsearch(master, obslist, params)
 print(f"Done in {time.time() - start:.1f} sec")
-sol = find_best_solution(solutions)
 
+sol = find_best_solution(result, master)
+try_solution(obslist, sol)
 print(
-    f"Best solution: {sol.latitude:.5f} {sol.longitude:.5f} {sol.depth:.2f} {sol.tmean:.3g}"
+   f"Best solution: {sol.latitude:.5f} {sol.longitude:.5f} {sol.depth:.2f} {sol.tmean:.3g}"
 )
 print(f"Misfit: {sol.misfit:.3g}")
 
-dump_solutions(solutions, "solutions.pkl")
+#dump_solutions(solutions, "solutions.pkl")
