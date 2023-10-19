@@ -12,10 +12,9 @@ Revision History:
     2023/08/15    Support selecting FDSN data centers.
 """
 import sys
-from pathlib import Path
 
 import pandas as pd
-from obspy import Catalog, UTCDateTime, read_events
+from obspy import Catalog, UTCDateTime, read_events, read_inventory
 from obspy.clients.fdsn.mass_downloader import Domain, MassDownloader, Restrictions
 from obspy.core.event import Event, Magnitude, Origin
 from obspy.geodetics import gps2dist_azimuth, kilometers2degrees
@@ -271,8 +270,6 @@ if sys.argv[1].endswith(".quakeml"):
     cat = read_events(sys.argv[1])
 elif sys.argv[1].endswith(".csv"):
     cat = read_events_from_csv(sys.argv[1])
-
-from obspy import read_inventory
 
 inv = read_inventory("1995-stations.xml")
 

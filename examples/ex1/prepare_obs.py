@@ -75,6 +75,6 @@ for sta in stations:
 
 # 4. Dump the observations into a file.
 #
-# We can use the read_obslist() function to read the observations back from a file to a list.
-# It's useful when we want to modify the observations manually.
+# We can use the read_obslist() function to read the observations back from a file
+# to a list. It's useful when we want to modify the observations manually.
 dump_obslist(obslist, "obs.dat")

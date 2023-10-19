@@ -15,8 +15,8 @@ install:
 	python -m pip install --no-deps -e .
 
 format:
-	isort .
 	black .
+	ruff check --fix ${PROJECT} examples
 
 lint:
 	pylint ${PROJECT} examples
