@@ -1,11 +1,11 @@
 """
 ex1: Run ddrelocator.
 """
+#%%
 import time
 
-import numpy as np
-from ddrelocator import Event, SearchParams, find_best_solution, gridsearch, try_solution
-from ddrelocator.helpers import dump_solutions, read_obslist
+from ddrelocator import Event, SearchParams, gridsearch, try_solution
+from ddrelocator.helpers import read_obslist
 from ddrelocator.plotting import plot_dt
 
 # Information of the master event [known]
@@ -33,14 +33,23 @@ plot_dt(obslist, master, show_unused=True)
 # relocate the slave event relative to the master event
 print("Grid search...  ", end="")
 start = time.time()
-result = gridsearch(master, obslist, params)
+sol, grid, Jout = gridsearch(master, obslist, params)
 print(f"Done in {time.time() - start:.1f} sec")
 
-sol = find_best_solution(result, master)
+# Try the best solution again to add more properties like tmean
 try_solution(obslist, sol)
 print(
-   f"Best solution: {sol.latitude:.5f} {sol.longitude:.5f} {sol.depth:.2f} {sol.tmean:.3g}"
+    f"Best solution: {sol.latitude:.5f} {sol.longitude:.5f} {sol.depth:.2f} {sol.tmean:.3g}"
 )
 print(f"Misfit: {sol.misfit:.3g}")
 
-#dump_solutions(solutions, "solutions.pkl")
+# dump_solutions(solutions, "solutions.pkl")
+
+# %%
+import numpy as np
+# %%
+idx = np.unravel_index(np.argmin(Jout, axis=None), Jout.shape)
+print(idx)
+print(Jout[idx])
+print(grid[0][idx], grid[1][idx], grid[2][idx])
+# %%
