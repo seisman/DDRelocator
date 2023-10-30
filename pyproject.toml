@@ -24,7 +24,7 @@ platforms = ["Any"]
 local_scheme = "node-and-date"
 fallback_version = "999.999.999+unknown"
 
-[tool.ruff]
+[tool.ruff.lint]
 select = [
     "E",  # pycodestyle
     "F",  # pyflakes
