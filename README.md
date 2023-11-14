@@ -8,8 +8,7 @@ using the master-event algorithm.
 
 ## Caution
 
-The program is written for personal interests only. There is no guarantee that
-that the program works correctly.
+The program is written for personal interests only. There is no guarantee that it works correctly.
 
 ## Dependencies
 
@@ -25,6 +24,7 @@ The package depends on the following Python packages:
 ```
 $ git clone https://github.com/seisman/DDRelocator.git
 $ cd DDRelocator
+$ pip install -r requirements.txt
 $ make install
 ```
 
