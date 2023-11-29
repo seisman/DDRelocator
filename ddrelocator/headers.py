@@ -178,11 +178,11 @@ class SearchParams:
         """
         Parameters
         ----------
-        dlats : list or np.ndarray
+        dlats : list or numpy.ndarray
             List of latitude differences to search.
-        dlons : list or np.ndarray
+        dlons : list or numpy.ndarray
             List of longitude differences to search.
-        ddeps : list or np.ndarray
+        ddeps : list or numpy.ndarray
             List of depth differences to search.
         """
         self.dlats = dlats
