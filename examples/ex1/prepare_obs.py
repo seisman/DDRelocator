@@ -69,7 +69,7 @@ for sta in stations:
             dtdd,
             dtdh,
             dt,
-            use=True,  # use this observation
+            use=1,  # use this observation
         )
     )
 

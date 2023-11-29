@@ -104,7 +104,7 @@ class Obs:
         dt : float
             Travel time difference.
         use : bool
-            Used in relocation or not. True for use, False for not use.
+            Used in relocation or not. 1 for use, 0 for not use.
 
         Attributes
         ----------
@@ -123,9 +123,7 @@ class Obs:
         self.dtdd = dtdd
         self.dtdh = dtdh
         self.dt = dt
-        if use not in (True, False, 0, 1):
-            raise ValueError("use must be True or False.")
-        self.use = bool(use)
+        self.use = use
 
 
 class Solution:
@@ -178,12 +176,12 @@ class SearchParams:
         """
         Parameters
         ----------
-        dlats : list or numpy.ndarray
-            List of latitude differences to search.
-        dlons : list or numpy.ndarray
-            List of longitude differences to search.
-        ddeps : list or numpy.ndarray
-            List of depth differences to search.
+        dlats : slice
+            slice(dlat_min, dlat_max, dlat_step)
+        dlons : slice
+            slice(dlon_min, dlon_max, dlon_step)
+        ddeps : slice
+            slice(ddep_min, ddep_max, ddep_step)
         """
         self.dlats = dlats
         self.dlons = dlons

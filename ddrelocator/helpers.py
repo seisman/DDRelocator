@@ -118,18 +118,9 @@ def dump_obslist(obslist, filename):
     filename : str
         Output filename.
     """
-    with open(filename, "w", encoding="utf8") as f:
-        f.write(
-            "station latitude longitude distance azimuth phase time dtdd dtdh dt use\n"
-        )
-        for obs in obslist:
-            f.write(
-                f"{obs.station} {obs.latitude:.5f} {obs.longitude:.5f} "
-                + f"{obs.distance:.5f} {obs.azimuth:.2f} "
-                + f"{obs.phase} {obs.time:.5f} {obs.dtdd:.5f} {obs.dtdh:.5f} "
-                + f"{obs.dt:.5f} "
-                + f"{int(obs.use)}\n"
-            )
+    # Convert to pandas.DataFrame and save to CSV
+    df = pd.DataFrame([vars(obs) for obs in obslist])
+    df.to_csv(filename, sep=" ", index=False, float_format="%.6f")
 
 
 def read_obslist(filename):
@@ -147,32 +138,16 @@ def read_obslist(filename):
         List of Obs objects.
     """
     df = pd.read_csv(filename, delim_whitespace=True, comment="#")
-    obslist = []
-    for _, row in df.iterrows():
-        obslist.append(
-            Obs(
-                row["station"],
-                row["latitude"],
-                row["longitude"],
-                row["distance"],
-                row["azimuth"],
-                row["phase"],
-                row["time"],
-                row["dtdd"],
-                row["dtdh"],
-                row["dt"],
-                bool(row["use"]),
-            )
-        )
+    obslist = [Obs(*(df.values.tolist()[i])) for i in range(len(df.index))]
     return obslist
 
 
-def dump_solutions(solutions, filename):
+def dump_solutions(grid, Jout, filename):
     """
     Dump list of solutions into a file.
     """
     with open(filename, "wb") as f:
-        pickle.dump(solutions, f)
+        pickle.dump((grid, Jout), f)
 
 
 def load_solutions(filename):

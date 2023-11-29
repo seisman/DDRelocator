@@ -1,13 +1,11 @@
 """
 ex1: Run ddrelocator.
 """
-# %%
 import time
 
-import numpy as np
 from ddrelocator import Event, SearchParams, gridsearch, try_solution
-from ddrelocator.helpers import read_obslist
-from ddrelocator.plotting import plot_dt
+from ddrelocator.helpers import dump_solutions, read_obslist
+from ddrelocator.plotting import plot_dt, plot_misfit, plot_residual
 
 # Information of the master event [known]
 master = Event("2018-02-01T00:00:00", 36.1688, 139.8075, 53.45, 4.7)
@@ -19,9 +17,9 @@ obslist = read_obslist("obs.dat")
 
 # search parameters
 params = SearchParams(
-    dlats=slice(-0.02, 0.02, 0.001),
-    dlons=slice(-0.02, 0.02, 0.001),
-    ddeps=slice(-2, 2, 0.1),
+    dlats=slice(-0.002, 0.002, 0.0002),
+    dlons=slice(-0.004, 0.004, 0.0002),
+    ddeps=slice(-1, 1, 0.01),
 )
 
 print("Ex1 for ddrelocator")
@@ -37,22 +35,25 @@ start = time.time()
 sol, grid, Jout = gridsearch(master, obslist, params)
 print(f"Done in {time.time() - start:.1f} sec")
 
+# Save the solutions into a pickle file so it can be reused
+dump_solutions(grid, Jout, "solutions.pkl")
+
 # Try the best solution again to add more properties like tmean
-try_solution(obslist, sol)
+try_solution(obslist, sol, keep_residual=True)
 print(
     "Best solution:\n"
     f"latitude: {sol.latitude:.5f}\n"
     f"longitude: {sol.longitude:.5f}\n"
     f"depth: {sol.depth:.2f}\n"
     f"time: {sol.tmean:.3g}\n"
+    f"Misfit: {sol.misfit:.3g}"
 )
-print(f"Misfit: {sol.misfit:.3g}")
 
-# dump_solutions(solutions, "solutions.pkl")
+# visualize the residuals
+slave_sol = Event(
+    slave.origin + sol.tmean, sol.latitude, sol.longitude, sol.depth, slave.magnitude
+)
+plot_residual(obslist, master, slave)
 
-# %%
-idx = np.unravel_index(np.argmin(Jout, axis=None), Jout.shape)
-print(idx)
-print(Jout[idx])
-print(grid[0][idx], grid[1][idx], grid[2][idx])
-# %%
+
+plot_misfit(grid, Jout)
