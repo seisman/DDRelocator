@@ -38,7 +38,11 @@ print(f"Done in {time.time() - start:.1f} sec")
 sol = find_best_solution(solutions)
 
 print(
-    f"Best solution: {sol.latitude:.5f} {sol.longitude:.5f} {sol.depth:.2f} {sol.tmean:.3g}"
+    "Best solution:\n"
+    f"latitude: {sol.latitude:.5f}\n"
+    f"longitude: {sol.longitude:.5f}\n"
+    f"depth: {sol.depth:.2f}\n"
+    f"time: {sol.tmean:.3g}\n"
 )
 print(f"Misfit: {sol.misfit:.3g}")
 
