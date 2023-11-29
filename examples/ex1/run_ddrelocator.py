@@ -1,9 +1,10 @@
 """
 ex1: Run ddrelocator.
 """
-#%%
+# %%
 import time
 
+import numpy as np
 from ddrelocator import Event, SearchParams, gridsearch, try_solution
 from ddrelocator.helpers import read_obslist
 from ddrelocator.plotting import plot_dt
@@ -49,8 +50,6 @@ print(f"Misfit: {sol.misfit:.3g}")
 
 # dump_solutions(solutions, "solutions.pkl")
 
-# %%
-import numpy as np
 # %%
 idx = np.unravel_index(np.argmin(Jout, axis=None), Jout.shape)
 print(idx)
