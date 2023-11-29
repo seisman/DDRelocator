@@ -5,8 +5,8 @@ help:
 	@echo "Commands:"
 	@echo ""
 	@echo "  install      install in editable mode"
+	@echo "  check        check the code for errors"
 	@echo "  format       format the code automatically"
-	@echo "  lint         lint the code"
 	@echo "  clean        clean up build and generated files"
 	@echo "  distclean    clean up build and generated files, including project metadata files"
 	@echo ""
@@ -14,16 +14,19 @@ help:
 install:
 	python -m pip install --no-deps -e .
 
-format:
-	ruff format ${PROJECT} examples
+check:
+	ruff check ${PROJECT} examples
+	ruff format --check ${PROJECT} examples
 
-lint:
-	pylint ${PROJECT} examples
+format:
+	ruff check --fix ${PROJECT} examples
+	ruff format ${PROJECT} examples
 
 clean:
 	find . -name "*.pyc" -exec rm -v {} +
 	find . -name "*~" -exec rm -v {} +
 	find . -type d -name  "__pycache__" -exec rm -rv {} +
+	rm -r .ruff_cache
 
 distclean: clean
 	rm -rvf *.egg-info
