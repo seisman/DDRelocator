@@ -3,53 +3,47 @@ ex2: Prepare observations.
 """
 import matplotlib.pyplot as plt
 import numpy as np
-from ddrelocator import Obs
+from ddrelocator import Event, Obs
 from ddrelocator.helpers import distaz, dump_obslist, get_ttime_slowness
-from obspy import UTCDateTime, read
+from obspy import read
 from obspy.signal.cross_correlation import correlate_template
 from obspy.taup import TauPyModel
 
-
-class Event:
-    """
-    Class for event information.
-    """
-
-    def __init__(self, origin, latitude, longitude, depth, magnitude):
-        self.origin = UTCDateTime(origin)
-        self.latitude = latitude
-        self.longitude = longitude
-        self.depth = depth
-        self.magnitude = magnitude
-        self.id = self.origin.strftime("%Y%m%d%H%M%S")
-
-
-# Event informatio
+# Event information from catalog. The later one (ev1) is the master event.
 ev1 = Event("2003-07-02T00:47:11.860", -3.643, 102.060, 75.2, 5.1)
 ev2 = Event("1995-11-14T06:32:55.750", -3.682, 101.924, 57.0, 5.1)
 
+# read waveforms
 st1 = read(f"SAC/{ev1.id}/*.SAC")
 st2 = read(f"SAC/{ev2.id}/*.SAC")
 
 model = TauPyModel(model="iasp91")
 # start and end time for the signal window, relative to predicted time
 t0, t1 = -2.0, 8.0
+cc_threshold = 0.8  # CC threshold to accept the observation
 
-obslist = []
+
+def refphase(dist):
+    """
+    Use different reference phase for different distance.
+    """
+    return ["p", "P", "Pdiff"] if dist < 117.0 else ["PKP", "PKIKP", "PKiKP"]
+
+
 fig, ax = plt.subplots(1, 1, figsize=(6, 30))
 ax.get_yaxis().set_visible(False)
-
-count = 1
-print("station latitude longitude distance azimuth phase dtdd dtdh dt use")
+obslist = []
 for tr1 in st1:  # loop over traces of the master event
+    # find the slave event trace with the same seed id
     st_match = st2.select(
         network=tr1.stats.network, station=tr1.stats.station, channel=tr1.stats.channel
     )
-    if len(st_match) == 0:
+    if len(st_match) == 0:  # no matched trace. skip.
         print(f"{tr1.id}: no matched trace.")
-    elif len(st_match) == 1:
+        continue
+    elif len(st_match) == 1:  # one matched trace. use it.
         tr2 = st_match[0]
-    else:
+    else:  # multiple matched traces. use the first one.
         print(f"{tr1.id}: {len(st_match)} traces found. Use the first one.")
         tr2 = st_match[0]
 
@@ -58,7 +52,8 @@ for tr1 in st1:  # loop over traces of the master event
         ev1.latitude, ev1.longitude, tr1.stats.sac.stla, tr1.stats.sac.stlo
     )
 
-    phase = ["p", "P", "Pdiff"] if dist < 117 else ["PKP", "PKIKP", "PKiKP"]
+    # get the reference phase name based on distance
+    phase = refphase(dist)
 
     # get travel time, horizontal slowness and vertical slowness
     name, ttime, dtdd, dtdh = get_ttime_slowness(model, ev1.depth, dist, phase)
@@ -83,9 +78,8 @@ for tr1 in st1:  # loop over traces of the master event
     tr1.normalize()
     tr2.normalize()
 
-    if value < 0.8:
+    if value < cc_threshold:  # skip if CC value is too small
         continue
-    count += 1
 
     station = f"{tr1.stats.network}.{tr1.stats.station}"
     obslist.append(
@@ -100,16 +94,17 @@ for tr1 in st1:  # loop over traces of the master event
             dtdd,
             dtdh,
             shift,
-            use=True,  # use this observation
+            use=1,  # use this observation
         )
     )
 
-    ax.plot(tr1.times() + t0, tr1.data * 0.5 + count, "b", lw=1.0)
-    ax.plot(tr2.times() + t0, tr2.data * 0.5 + count, "r", lw=1.0)
-    ax.text(t0 - 0.5, count, f"{station} ({name})", ha="right", va="center", fontsize=8)
+    idx = len(obslist)  # index for plotting
+    ax.plot(tr1.times() + t0, tr1.data * 0.5 + idx, "b", lw=1.0)
+    ax.plot(tr2.times() + t0, tr2.data * 0.5 + idx, "r", lw=1.0)
+    ax.text(t0 - 0.5, idx, f"{station} ({name})", ha="right", va="center", fontsize=8)
     ax.text(
         t0,
-        count + 0.2,
+        idx + 0.2,
         f"{shift:.3f} ({value:.2f})",
         ha="left",
         va="center",
@@ -119,4 +114,5 @@ for tr1 in st1:  # loop over traces of the master event
 plt.tight_layout()
 plt.show()
 
+# dump the observations to a file
 dump_obslist(obslist, "obs-2003-1995.dat")

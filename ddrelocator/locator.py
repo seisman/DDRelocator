@@ -1,11 +1,10 @@
 """
 Main functions for relocation.
 """
-import itertools
-
 import numpy as np
 from ddrelocator.headers import Solution
 from ddrelocator.helpers import distaz
+from scipy import optimize
 
 
 def try_solution(obslist, sol, keep_residual=False):
@@ -42,7 +41,30 @@ def try_solution(obslist, sol, keep_residual=False):
             del obs.residual, obs.dt_pre
 
 
-def gridsearch(master, obslist, params):
+def try_solution_wrapper(params, *args):
+    """
+    Wrapper for try_solution() to be used in grid search.
+
+    Parameters
+    ----------
+    params : tuple
+        Tuple of parameters to be tested. Each element is a slice object.
+    args : tuple
+        (master, obslist)
+
+    Returns
+    -------
+    misfit : float
+        RMS of traveltime residuals.
+    """
+    dlat, dlon, ddep = params
+    master, obslist = args
+    sol = Solution(dlat, dlon, ddep, master)
+    try_solution(obslist, sol)
+    return sol.misfit
+
+
+def gridsearch(master, obslist, params, ncores=-1):
     """
     Grid search all possible solutions.
 
@@ -54,33 +76,22 @@ def gridsearch(master, obslist, params):
         List of Obs objects.
     params : SearchParams
         Search parameters.
+    ncores : int, optional
+        Number of cores to use. If -1, use all available cores.
 
     Returns
     -------
     solutions : list
         List of Solution objects.
     """
-    solutions = []
-    for ddep, dlat, dlon in itertools.product(params.ddeps, params.dlats, params.dlons):
-        sol = Solution(dlat, dlon, ddep, master)
-        try_solution(obslist, sol)
-        solutions.append(sol)
-    return solutions
-
-
-def find_best_solution(solutions):
-    """
-    Find the best solution.
-
-    Parameters
-    ----------
-    solutions : list
-        List of Solution objects.
-
-    Returns
-    -------
-    best : Solution
-        Best Solution object.
-    """
-    idx = np.argmin([i.misfit for i in solutions])
-    return solutions[idx]
+    result = optimize.brute(
+        func=try_solution_wrapper,
+        ranges=(params.dlats, params.dlons, params.ddeps),
+        args=(master, obslist),
+        finish=None,
+        full_output=True,
+        workers=ncores,
+    )
+    dlat, dlon, ddep = result[0]
+    grid, Jout = result[2], result[3]
+    return Solution(dlat, dlon, ddep, master), grid, Jout

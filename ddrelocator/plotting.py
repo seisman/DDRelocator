@@ -3,7 +3,6 @@ Visualization functions.
 """
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 
 
 def plot_dt_as_azimuth(ax, obslist, residual=False, show_unused=False):
@@ -21,7 +20,7 @@ def plot_dt_as_azimuth(ax, obslist, residual=False, show_unused=False):
     show_unused : bool, optional
         If True, show unused observations.
     """
-    usemask = np.array([i.use for i in obslist])
+    usemask = np.array([i.use == 1 for i in obslist])
     az = np.array([i.azimuth for i in obslist])
     if residual:
         dt = np.array([i.residual for i in obslist])
@@ -60,7 +59,7 @@ def plot_dt_on_map(ax, obslist, master, slave=None, residual=False, show_unused=
     show_unused : bool, optional
         If True, show unused observations.
     """
-    usemask = np.array([i.use for i in obslist])
+    usemask = np.array([i.use == 1 for i in obslist])
     latitudes = np.array([i.latitude for i in obslist])
     longitudes = np.array([i.longitude for i in obslist])
     labels = np.array([f"{i.station}({i.phase})" for i in obslist])
@@ -193,33 +192,23 @@ def plot_residual(obslist, master, slave, show_unused=False):
     plt.show()
 
 
-def plot_misfit(solutions, bestsol):
+def plot_misfit(grid, Jout):
     """
     Plot the misfit of solutions.
 
-    Parameters
-    ----------
-    solutions : list of Solution
-        List of solutions.
-    bestsol : Solution
-        Best solution.
+    This function is adapted from https://stackoverflow.com/questions/49015138.
     """
-    # convert list of solutions to pd.DataFrame
-    df = pd.DataFrame([sol.__dict__ for sol in solutions])
+    fig, axs = plt.subplots(nrows=1, ncols=3, figsize=(12, 4))
+    names = ["latitude", "longitude", "depth"]
 
-    fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(12, 4))
-    # misfit vary with location
-    df2 = df[df.ddepth == bestsol.ddepth]
-    df2.plot.scatter(x="dlon", y="dlat", c="misfit", colormap="viridis", ax=axes[0])
-    axes[0].scatter(bestsol.dlon, bestsol.dlat, marker="*", facecolor="r")
-
-    df2 = df[df.dlon == bestsol.dlon]
-    df2.plot.scatter(x="dlat", y="ddepth", c="misfit", colormap="viridis", ax=axes[1])
-    axes[1].scatter(bestsol.dlat, bestsol.ddepth, marker="*", facecolor="r")
-
-    df2 = df[df.dlat == bestsol.dlat]
-    df2.plot.scatter(x="dlon", y="ddepth", c="misfit", colormap="viridis", ax=axes[2])
-    axes[2].scatter(bestsol.dlon, bestsol.ddepth, marker="*", facecolor="r")
-
+    i = 0
+    for xi, yi, zi in ((0, 1, 2), (0, 2, 1), (1, 2, 0)):
+        ax = axs[i]
+        X = grid[xi]
+        Y = grid[yi]
+        ax.pcolormesh(np.amin(X, axis=zi), np.amin(Y, axis=zi), np.amin(Jout, axis=zi))
+        ax.set_xlabel(names[xi])
+        ax.set_ylabel(names[yi])
+        i += 1
     fig.tight_layout()
     plt.show()

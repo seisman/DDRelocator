@@ -1,5 +1,7 @@
 """
 ex1: Check a solution.
+
+The solution can be the best solution from gridsearch or any other solution.
 """
 from ddrelocator import Event, Solution, try_solution
 from ddrelocator.helpers import read_obslist

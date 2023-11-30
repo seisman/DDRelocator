@@ -36,6 +36,9 @@ class Event:
         self.magnitude = magnitude  # unused
         self.id = self.origin.strftime("%Y%m%d%H%M%S")
 
+    def __str__(self):
+        return f"{self.origin} {self.latitude} {self.longitude} {self.depth}"
+
 
 class Station:
     """
@@ -78,7 +81,7 @@ class Obs:
         dtdd,
         dtdh,
         dt,
-        use=True,
+        use=1,
     ):
         """
         Parameters
@@ -103,8 +106,8 @@ class Obs:
             Vertical slowness in s/km.
         dt : float
             Travel time difference.
-        use : bool
-            Used in relocation or not. True for use, False for not use.
+        use : int
+            Used in relocation or not. 1 for use, 0 for not use.
 
         Attributes
         ----------
@@ -123,9 +126,7 @@ class Obs:
         self.dtdd = dtdd
         self.dtdh = dtdh
         self.dt = dt
-        if use not in (True, False, 0, 1):
-            raise ValueError("use must be True or False.")
-        self.use = bool(use)
+        self.use = use
 
 
 class Solution:
@@ -178,12 +179,12 @@ class SearchParams:
         """
         Parameters
         ----------
-        dlats : list or np.ndarray
-            List of latitude differences to search.
-        dlons : list or np.ndarray
-            List of longitude differences to search.
-        ddeps : list or np.ndarray
-            List of depth differences to search.
+        dlats : slice
+            slice(dlat_min, dlat_max, dlat_step)
+        dlons : slice
+            slice(dlon_min, dlon_max, dlon_step)
+        ddeps : slice
+            slice(ddep_min, ddep_max, ddep_step)
         """
         self.dlats = dlats
         self.dlons = dlons

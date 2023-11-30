@@ -3,10 +3,9 @@ ex1: Run ddrelocator.
 """
 import time
 
-import numpy as np
-from ddrelocator import Event, SearchParams, find_best_solution, gridsearch
+from ddrelocator import Event, SearchParams, gridsearch, try_solution
 from ddrelocator.helpers import dump_solutions, read_obslist
-from ddrelocator.plotting import plot_dt
+from ddrelocator.plotting import plot_dt, plot_misfit, plot_residual
 
 # Information of the master event [known]
 master = Event("2018-02-01T00:00:00", 36.1688, 139.8075, 53.45, 4.7)
@@ -18,14 +17,14 @@ obslist = read_obslist("obs.dat")
 
 # search parameters
 params = SearchParams(
-    dlats=np.arange(-0.02, 0.02, 0.001),
-    dlons=np.arange(-0.02, 0.02, 0.001),
-    ddeps=np.arange(-2, 2, 0.1),
+    dlats=slice(-0.002, 0.002, 0.0002),
+    dlons=slice(-0.004, 0.004, 0.0002),
+    ddeps=slice(-1, 1, 0.01),
 )
 
 print("Ex1 for ddrelocator")
-print(f"Master event: {master.latitude:.5f} {master.longitude:.5f} {master.depth:.2f}")
-print(f"Slave event: {slave.latitude:.5f} {slave.longitude:.5f} {slave.depth:.2f}")
+print("Master event: ", master)
+print("Slave event: ", slave)
 
 # visualize the observations
 plot_dt(obslist, master, show_unused=True)
@@ -33,17 +32,30 @@ plot_dt(obslist, master, show_unused=True)
 # relocate the slave event relative to the master event
 print("Grid search...  ", end="")
 start = time.time()
-solutions = gridsearch(master, obslist, params)
+sol, grid, Jout = gridsearch(master, obslist, params)
 print(f"Done in {time.time() - start:.1f} sec")
-sol = find_best_solution(solutions)
 
+# Try the best solution again to add more properties like tmean
+try_solution(obslist, sol, keep_residual=True)
+# the best location for the slave event
+slave_sol = Event(
+    slave.origin + sol.tmean, sol.latitude, sol.longitude, sol.depth, slave.magnitude
+)
 print(
     "Best solution:\n"
-    f"latitude: {sol.latitude:.5f}\n"
-    f"longitude: {sol.longitude:.5f}\n"
-    f"depth: {sol.depth:.2f}\n"
-    f"time: {sol.tmean:.3g}\n"
+    f"dlat: {sol.dlat:.5f}\n"
+    f"dlon: {sol.dlon:.5f}\n"
+    f"ddepth: {sol.ddepth:.2f}\n"
+    f"tmean: {sol.tmean:.3g}\n"
+    f"misfit: {sol.misfit:.3g}"
 )
-print(f"Misfit: {sol.misfit:.3g}")
+print("Slave event: ", slave_sol)
 
-dump_solutions(solutions, "solutions.pkl")
+# visualize the residuals
+plot_residual(obslist, master, slave_sol)
+
+# visualize the misfit
+plot_misfit(grid, Jout)
+
+# Save the solutions into a pickle file so it can be reused
+dump_solutions(grid, Jout, "solutions.pkl")
