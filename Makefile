@@ -1,5 +1,6 @@
 # Build, package, test and clean
 PROJECT=ddrelocator
+FORMAT_FILES=${PROJECT} examples
 
 help:
 	@echo "Commands:"
@@ -15,12 +16,12 @@ install:
 	python -m pip install --no-deps -e .
 
 check:
-	ruff check ${PROJECT} examples
-	ruff format --check ${PROJECT} examples
+	ruff check ${FORMAT_FILES}
+	ruff format --check ${FORMAT_FILES}
 
 format:
-	ruff check --fix ${PROJECT} examples
-	ruff format ${PROJECT} examples
+	ruff check --fix ${FORMAT_FILES}
+	ruff format ${FORMAT_FILES}
 
 clean:
 	find . -name "*.pyc" -exec rm -v {} +
