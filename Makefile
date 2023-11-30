@@ -26,7 +26,7 @@ clean:
 	find . -name "*.pyc" -exec rm -v {} +
 	find . -name "*~" -exec rm -v {} +
 	find . -type d -name  "__pycache__" -exec rm -rv {} +
-	rm -r .ruff_cache
+	rm -rf .ruff_cache
 
 distclean: clean
 	rm -rvf *.egg-info
