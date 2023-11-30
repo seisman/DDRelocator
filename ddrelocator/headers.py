@@ -36,6 +36,9 @@ class Event:
         self.magnitude = magnitude  # unused
         self.id = self.origin.strftime("%Y%m%d%H%M%S")
 
+    def __str__(self):
+        return f"{self.origin} {self.latitude} {self.longitude} {self.depth}"
+
 
 class Station:
     """
@@ -78,7 +81,7 @@ class Obs:
         dtdd,
         dtdh,
         dt,
-        use=True,
+        use=1,
     ):
         """
         Parameters
@@ -103,7 +106,7 @@ class Obs:
             Vertical slowness in s/km.
         dt : float
             Travel time difference.
-        use : bool
+        use : int
             Used in relocation or not. 1 for use, 0 for not use.
 
         Attributes

@@ -23,8 +23,8 @@ params = SearchParams(
 )
 
 print("Ex1 for ddrelocator")
-print(f"Master event: {master.latitude:.5f} {master.longitude:.5f} {master.depth:.2f}")
-print(f"Slave event: {slave.latitude:.5f} {slave.longitude:.5f} {slave.depth:.2f}")
+print("Master event: ", master)
+print("Slave event: ", slave)
 
 # visualize the observations
 plot_dt(obslist, master, show_unused=True)
@@ -35,25 +35,27 @@ start = time.time()
 sol, grid, Jout = gridsearch(master, obslist, params)
 print(f"Done in {time.time() - start:.1f} sec")
 
-# Save the solutions into a pickle file so it can be reused
-dump_solutions(grid, Jout, "solutions.pkl")
-
 # Try the best solution again to add more properties like tmean
 try_solution(obslist, sol, keep_residual=True)
-print(
-    "Best solution:\n"
-    f"latitude: {sol.latitude:.5f}\n"
-    f"longitude: {sol.longitude:.5f}\n"
-    f"depth: {sol.depth:.2f}\n"
-    f"time: {sol.tmean:.3g}\n"
-    f"Misfit: {sol.misfit:.3g}"
-)
-
-# visualize the residuals
+# the best location for the slave event
 slave_sol = Event(
     slave.origin + sol.tmean, sol.latitude, sol.longitude, sol.depth, slave.magnitude
 )
-plot_residual(obslist, master, slave)
+print(
+    "Best solution:\n"
+    f"dlat: {sol.dlat:.5f}\n"
+    f"dlon: {sol.dlon:.5f}\n"
+    f"ddepth: {sol.ddepth:.2f}\n"
+    f"tmean: {sol.tmean:.3g}\n"
+    f"misfit: {sol.misfit:.3g}"
+)
+print("Slave event: ", slave_sol)
 
+# visualize the residuals
+plot_residual(obslist, master, slave_sol)
 
+# visualize the misfit
 plot_misfit(grid, Jout)
+
+# Save the solutions into a pickle file so it can be reused
+dump_solutions(grid, Jout, "solutions.pkl")

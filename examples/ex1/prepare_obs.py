@@ -15,6 +15,8 @@ from obspy.taup import TauPyModel
 # Notes: depth in km and magnitude is unused.
 master = Event("2018-02-01T00:00:00", 36.1688, 139.8075, 53.45, 4.7)
 slave = Event("2018-02-02T00:00:00", 36.1678, 139.8095, 53.45, 4.7)
+print(f"Master event: {master}")
+print(f"Slave event: {slave}")
 
 # 2. Define a series of stations
 #
@@ -42,6 +44,7 @@ stations = [
 # Use the IASP91 model to calculate the theoretical traveltime.
 phase = "p"
 model = TauPyModel(model="iasp91")
+
 # Create a list of Obs objects.
 obslist = []
 for sta in stations:
@@ -77,4 +80,5 @@ for sta in stations:
 #
 # We can use the read_obslist() function to read the observations back from a file
 # to a list. It's useful when we want to modify the observations manually.
+print(f"Writing {len(obslist)} observations into file obs.dat")
 dump_obslist(obslist, "obs.dat")
