@@ -3,27 +3,12 @@ ex2: Check a solution.
 """
 import matplotlib.pyplot as plt
 import numpy as np
-from ddrelocator import Solution, try_solution
+from ddrelocator import Event, Solution, try_solution
 from ddrelocator.helpers import read_obslist
-from obspy import UTCDateTime, read
+from obspy import read
 from obspy.geodetics import kilometers2degrees
 
-
-class Event:
-    """
-    Class for event information.
-    """
-
-    def __init__(self, origin, latitude, longitude, depth, magnitude):
-        self.origin = UTCDateTime(origin)
-        self.latitude = latitude
-        self.longitude = longitude
-        self.depth = depth
-        self.magnitude = magnitude
-        self.id = self.origin.strftime("%Y%m%d%H%M%S")
-
-
-# Event informatio
+# Event information
 ev1 = Event("2003-07-02T00:47:11.860", -3.643, 102.060, 75.2, 5.1)
 ev2 = Event("1995-11-14T06:32:55.750", -3.682, 101.924, 57.0, 5.1)
 
