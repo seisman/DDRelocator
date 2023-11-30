@@ -8,7 +8,8 @@ using the master-event algorithm.
 
 ## Caution
 
-The program is written for personal interests only. There is no guarantee that it works correctly.
+The program is written for personal interests only. There is no guarantee that
+it works correctly.
 
 ## Dependencies
 
