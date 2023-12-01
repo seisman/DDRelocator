@@ -2,7 +2,6 @@
 Helper functions for ddrelocator.
 """
 import pickle
-import warnings
 
 import numpy as np
 import pandas as pd
@@ -87,12 +86,8 @@ def get_ttime_slowness(model, depth, distance, phase_list):
     if len(arrivals) == 0:
         msg = f"No arrival found for depth={depth} and distance={distance}."
         raise ValueError(msg)
-    if len(arrivals) > 1:
-        warnings.warn(
-            f"More than one arrivals found for depth={depth} and distance={distance}. "
-            + "The first one is used."
-        )
 
+    # only use the first arrival
     arrival = arrivals[0]
     # phase name.
     phasename = arrival.name
@@ -138,8 +133,7 @@ def read_obslist(filename):
         List of Obs objects.
     """
     df = pd.read_csv(filename, delim_whitespace=True, comment="#")
-    obslist = [Obs(*(df.values.tolist()[i])) for i in range(len(df.index))]
-    return obslist
+    return [Obs(*(df.values.tolist()[i])) for i in range(len(df.index))]
 
 
 def dump_solutions(grid, Jout, filename):
