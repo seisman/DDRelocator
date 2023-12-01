@@ -24,12 +24,10 @@ def plot_dt_as_azimuth(ax, obslist, residual=False, show_unused=False):
     az = np.array([i.azimuth for i in obslist])
     if residual:
         dt = np.array([i.residual for i in obslist])
-        title = "Residual vs azimuth"
-        ylabel = "Residual (s)"
+        title, ylabel = "Residual vs azimuth", "Residual (s)"
     else:
         dt = np.array([i.dt for i in obslist])
-        title = "dt vs azimuth"
-        ylabel = "dt (s)"
+        title, ylabel = "dt vs azimuth", "dt (s)"
 
     ax.scatter(az[usemask], dt[usemask], s=25, marker="o")
     if show_unused:
@@ -198,17 +196,28 @@ def plot_misfit(grid, Jout):
 
     This function is adapted from https://stackoverflow.com/questions/49015138.
     """
-    fig, axs = plt.subplots(nrows=1, ncols=3, figsize=(12, 4))
-    names = ["latitude", "longitude", "depth"]
+    fig, axs = plt.subplots(nrows=1, ncols=3, figsize=(15, 4))
 
+    names = ["latitude", "longitude", "depth"]
     i = 0
     for xi, yi, zi in ((0, 1, 2), (0, 2, 1), (1, 2, 0)):
         ax = axs[i]
-        X = grid[xi]
-        Y = grid[yi]
-        ax.pcolormesh(np.amin(X, axis=zi), np.amin(Y, axis=zi), np.amin(Jout, axis=zi))
+        X, Y = grid[xi], grid[yi]
+        cf = ax.pcolormesh(
+            np.amin(X, axis=zi),
+            np.amin(Y, axis=zi),
+            np.amin(Jout, axis=zi),
+            cmap="viridis_r",
+        )
+        fig.colorbar(cf, ax=ax, orientation="vertical", label="Misfit")
+
+        # plot the best solution
+        idx = np.argmin(Jout)
+        ax.scatter(X.flat[idx], Y.flat[idx], s=50, c="r", marker="*")
+
         ax.set_xlabel(names[xi])
         ax.set_ylabel(names[yi])
         i += 1
+
     fig.tight_layout()
     plt.show()
