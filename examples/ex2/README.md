@@ -8,4 +8,3 @@
 5.  `prepare_obs.py`: prepare the observations.
 6.  `run_ddrelocator.py`: run the ddrelocator program
 7.  `check_solution.py`: check a solution
-8.  `check_misfit.py`: visualize the misfit
