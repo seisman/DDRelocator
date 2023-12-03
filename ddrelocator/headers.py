@@ -169,6 +169,14 @@ class Solution:
         self.longitude = master.longitude + dlon
         self.depth = master.depth + ddepth
 
+    def __str__(self):
+        result = f"dlat: {self.dlat}, dlon: {self.dlon}, ddepth: {self.ddepth}"
+        if hasattr(self, "tmean"):
+            result += f", tmean: {self.tmean:.3f}"
+        if hasattr(self, "misfit"):
+            result += f", misfit: {self.misfit:.3f}"
+        return result
+
 
 class SearchParams:
     """

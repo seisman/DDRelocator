@@ -45,14 +45,7 @@ try_solution(obslist, sol, keep_residual=True)
 slave_sol = Event(
     slave.origin + sol.tmean, sol.latitude, sol.longitude, sol.depth, slave.magnitude
 )
-print(
-    "Best solution:\n"
-    f"dlat: {sol.dlat:.5f}\n"
-    f"dlon: {sol.dlon:.5f}\n"
-    f"ddepth: {sol.ddepth:.2f}\n"
-    f"tmean: {sol.tmean:.3g}\n"
-    f"misfit: {sol.misfit:.3g}"
-)
+print("Best solution:", sol)
 print("Slave event: ", slave_sol)
 
 # visualize the residuals
