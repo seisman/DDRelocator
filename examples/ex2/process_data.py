@@ -5,20 +5,7 @@ from pathlib import Path
 
 from obspy import UTCDateTime, read, read_inventory
 from obspy.io.sac import SACTrace
-
-
-class Event:
-    """
-    Class for event information.
-    """
-
-    def __init__(self, origin, latitude, longitude, depth, magnitude):
-        self.origin = UTCDateTime(origin)
-        self.latitude = latitude
-        self.longitude = longitude
-        self.depth = depth
-        self.magnitude = magnitude
-        self.id = self.origin.strftime("%Y%m%d%H%M%S")
+from ddrelocator.headers import Event
 
 
 # The poles and zeros information are from SAC source code `sac/src/icm/wwsp.c`.
