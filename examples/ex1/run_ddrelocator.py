@@ -3,7 +3,7 @@ ex1: Run ddrelocator.
 """
 import time
 
-from ddrelocator import Event, SearchParams, gridsearch, try_solution
+from ddrelocator import Event, SearchParams, find_solution, try_solution
 from ddrelocator.helpers import dump_solutions, read_obslist
 from ddrelocator.plotting import plot_dt, plot_misfit, plot_residual
 
@@ -36,7 +36,7 @@ plot_dt(obslist, master, show_unused=True)
 # relocate the slave event relative to the master event
 print("Grid search...  ", end="")
 start = time.time()
-sol, grid, Jout = gridsearch(master, obslist, params)
+sol, grid, Jout = find_solution(master, obslist, params)
 print(f"Done in {time.time() - start:.1f} sec")
 
 # Try the best solution again to add more properties like tmean and residuals

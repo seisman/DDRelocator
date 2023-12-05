@@ -3,10 +3,9 @@ ex2: process miniseed data and save as SAC format.
 """
 from pathlib import Path
 
-from obspy import UTCDateTime, read, read_inventory
-from obspy.io.sac import SACTrace
 from ddrelocator.headers import Event
-
+from obspy import read, read_inventory
+from obspy.io.sac import SACTrace
 
 # The poles and zeros information are from SAC source code `sac/src/icm/wwsp.c`.
 paz_wwsp = {

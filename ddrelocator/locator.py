@@ -64,9 +64,9 @@ def try_solution_wrapper(params, *args):
     return sol.misfit
 
 
-def gridsearch(master, obslist, params, ncores=-1):
+def find_solution(master, obslist, params, ncores=-1):
     """
-    Grid search all possible solutions.
+    Find the best solution.
 
     Parameters
     ----------
@@ -81,8 +81,8 @@ def gridsearch(master, obslist, params, ncores=-1):
 
     Returns
     -------
-    solutions : list
-        List of Solution objects.
+    tuple
+        The best solution, and the grid/Jout from scipy.optimize.brute function.
     """
     result = optimize.brute(
         func=try_solution_wrapper,
