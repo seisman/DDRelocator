@@ -40,11 +40,9 @@ sol, grid, Jout = find_solution(master, obslist, params)
 print(f"Done in {time.time() - start:.1f} sec")
 
 # Try the best solution again to add more properties like tmean and residuals
-try_solution(obslist, sol, keep_residual=True)
+try_solution(master, obslist, sol, keep_residual=True)
 # the best location for the slave event
-slave_sol = Event(
-    slave.origin + sol.tmean, sol.latitude, sol.longitude, sol.depth, slave.magnitude
-)
+slave_sol = sol.to_event(master, slave)
 print("Best solution:", sol)
 print("Slave event: ", slave_sol)
 

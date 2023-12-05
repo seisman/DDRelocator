@@ -7,7 +7,7 @@ from ddrelocator.helpers import distaz
 from scipy import optimize
 
 
-def try_solution(obslist, sol, keep_residual=False):
+def try_solution(master, obslist, sol, keep_residual=False):
     """
     Calculate the RMS of traveltime residuals for a given solution.
 
@@ -20,9 +20,12 @@ def try_solution(obslist, sol, keep_residual=False):
     keep_residual : bool, optional
         If True, keep the dt_pre and residual in the Obs object.
     """
+    # Convert the solution to absolute location
+    latitude = master.latitude + sol.dlat
+    longitude = master.longitude + sol.dlon
     # For all observations, calculate predicted traveltime difference and residual
     for obs in obslist:
-        distance = distaz(sol.latitude, sol.longitude, obs.latitude, obs.longitude)[0]
+        distance = distaz(latitude, longitude, obs.latitude, obs.longitude)[0]
         obs.dt_pre = obs.dtdd * (distance - obs.distance) + obs.dtdh * sol.ddepth
         obs.residual = obs.dt - obs.dt_pre
 
@@ -60,8 +63,8 @@ def try_solution_wrapper(params, *args):
     """
     dlat, dlon, ddep = params
     master, obslist = args
-    sol = Solution(dlat, dlon, ddep, master)
-    try_solution(obslist, sol)
+    sol = Solution(dlat, dlon, ddep)
+    try_solution(master, obslist, sol)
     return sol.misfit
 
 
@@ -95,4 +98,4 @@ def find_solution(master, obslist, params, ncores=-1):
     )
     dlat, dlon, ddep = result[0]
     grid, Jout = result[2], result[3]
-    return Solution(dlat, dlon, ddep, master), grid, Jout
+    return Solution(dlat, dlon, ddep), grid, Jout

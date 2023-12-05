@@ -22,7 +22,6 @@ sol = Solution(
     dlat=kilometers2degrees(ddist * np.cos(np.deg2rad(daz)) / 1000.0),
     dlon=kilometers2degrees(ddist * np.sin(np.deg2rad(daz)) / 1000.0),
     ddepth=-0.5,
-    master=ev1,
 )
 """
 # Zhang & Wen, 2023, SRL
@@ -31,10 +30,9 @@ sol = Solution(
     dlat=kilometers2degrees(ddist * np.cos(np.deg2rad(daz)) / 1000.0),
     dlon=kilometers2degrees(ddist * np.sin(np.deg2rad(daz)) / 1000.0),
     ddepth=0.058,
-    master=ev1,
 )
 
-try_solution(obslist, sol, keep_residual=True)
+try_solution(ev1, obslist, sol, keep_residual=True)
 for obs in obslist:
     obs.residual += sol.tmean
 sol.tmean = tmean  # force the tmean to the reported value

@@ -134,7 +134,7 @@ class Solution:
     Class for solution.
     """
 
-    def __init__(self, dlat, dlon, ddepth, master):
+    def __init__(self, dlat, dlon, ddepth):
         """
         Parameters
         ----------
@@ -144,17 +144,9 @@ class Solution:
             Longitude difference in degrees.
         ddepth : float
             Depth difference in km.
-        master : Event
-            Master event.
 
         Attributes
         ----------
-        latitude : float
-            Absolute latitude.
-        longitude : float
-            Absolute longitude.
-        depth : float
-            Absolute depth.
         tmean : float
             Mean travel time residual used as the origin time correction.
         misfit : float
@@ -164,10 +156,6 @@ class Solution:
         self.dlat = dlat
         self.dlon = dlon
         self.ddepth = ddepth
-        # absolute location
-        self.latitude = master.latitude + dlat
-        self.longitude = master.longitude + dlon
-        self.depth = master.depth + ddepth
 
     def __str__(self):
         result = f"dlat: {self.dlat}, dlon: {self.dlon}, ddepth: {self.ddepth}"
@@ -176,6 +164,27 @@ class Solution:
         if hasattr(self, "misfit"):
             result += f", misfit: {self.misfit:.3f}"
         return result
+
+    def to_event(self, master, slave=None):
+        """
+        Convert the solution to absolute time and location.
+
+        Parameters
+        ----------
+        master : Event
+            Master event.
+        slave : Event
+            Slave event.
+        """
+        origin = master.origin if slave is None else slave.origin
+        magnitude = master.magnitude if slave is None else slave.magnitude
+        return Event(
+            origin=origin + self.tmean,
+            latitude=master.latitude + self.dlat,
+            longitude=master.longitude + self.dlon,
+            depth=master.depth + self.ddepth,
+            magnitude=magnitude,
+        )
 
 
 class SearchParams:
