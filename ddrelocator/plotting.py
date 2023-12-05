@@ -3,6 +3,7 @@ Visualization functions.
 """
 import matplotlib.pyplot as plt
 import numpy as np
+from ddrelocator.helpers import obslist_to_dataframe
 
 
 def plot_dt_as_azimuth(ax, obslist, residual=False):
@@ -18,16 +19,13 @@ def plot_dt_as_azimuth(ax, obslist, residual=False):
     residual : bool, optional
         If True, plot residuals. Else, plot travel time differences.
     """
-    az = np.array([i.azimuth for i in obslist])
+    df = obslist_to_dataframe(obslist)
     if residual:
-        dt = np.array([i.residual for i in obslist])
-        title, ylabel = "Residual vs azimuth", "Residual (s)"
+        dt, title, ylabel = df.residual, "Residual vs azimuth", "Residual (s)"
     else:
-        dt = np.array([i.dt for i in obslist])
-        title, ylabel = "dt vs azimuth", "dt (s)"
+        dt, title, ylabel = df.dt, "dt vs azimuth", "dt (s)"
 
-    ax.scatter(az, dt, s=25, marker="o")
-
+    ax.scatter(df.azimuth, dt, s=25, marker="o")
     ax.set_xlabel("Azimuth (deg)")
     ax.set_ylabel(ylabel)
     ax.set_title(title)
@@ -50,23 +48,20 @@ def plot_dt_on_map(ax, obslist, master, slave=None, residual=False):
     residual : bool, optional
         If True, plot residuals. Else, plot travel time differences.
     """
-    latitudes = np.array([i.latitude for i in obslist])
-    longitudes = np.array([i.longitude for i in obslist])
-    labels = np.array([f"{i.station}({i.phase})" for i in obslist])
+    df = obslist_to_dataframe(obslist)
+
     if residual:
-        dt = np.array([i.residual for i in obslist])
-        title = "Residuals"
+        dt, title = df.residual, "Residuals"
     else:
-        dt = np.array([i.dt for i in obslist])
-        title = "Travel time differences"
+        dt, title = df.dt, "Travel time differences"
     dt *= 1000  # convert to ms
 
     # scale factor for marker size
-    factor = 200 / max(np.abs(dt).max(), 100)
+    factor = 200 / max(dt.abs().max(), 100)
     # plot positive dt
     ax.scatter(
-        longitudes[dt >= 0],
-        latitudes[dt >= 0],
+        df.longitude[dt >= 0],
+        df.latitude[dt >= 0],
         s=dt[dt >= 0] * factor,
         edgecolors="r",
         facecolors="none",
@@ -74,18 +69,18 @@ def plot_dt_on_map(ax, obslist, master, slave=None, residual=False):
     )
     # plot negative dt
     ax.scatter(
-        longitudes[dt < 0],
-        latitudes[dt < 0],
+        df.longitude[dt < 0],
+        df.latitude[dt < 0],
         s=abs(dt[dt < 0]) * factor,
         edgecolors="b",
         facecolors="none",
         marker="s",
     )
     # Add station labels
-    for i, label in enumerate(labels):
+    for i in range(len(obslist)):
         ax.annotate(
-            label,
-            (longitudes[i], latitudes[i]),
+            f"{obslist[i].station}({obslist[i].phase})",
+            (df.longitude[i], df.latitude[i]),
             fontsize=6,
             xytext=(0, -5),
             textcoords="offset points",
@@ -96,11 +91,9 @@ def plot_dt_on_map(ax, obslist, master, slave=None, residual=False):
     # Add legend
     for dt in [-60, -40, -20, 20, 40, 60]:
         if dt > 0:
-            edgecolor = "r"
-            marker = "o"
+            edgecolor, marker = "r", "o"
         else:
-            edgecolor = "b"
-            marker = "s"
+            edgecolor, marker = "b", "s"
         ax.scatter(
             [],
             [],
@@ -123,10 +116,8 @@ def plot_dt(obslist, master):
     Plot the travel time differences of observations.
     """
     fig, axs = plt.subplots(1, 2, figsize=(10, 5))
-
     plot_dt_on_map(axs[0], obslist, master, residual=False)
     plot_dt_as_azimuth(axs[1], obslist, residual=False)
-
     fig.tight_layout()
     plt.show()
 
@@ -136,7 +127,6 @@ def plot_residual(obslist, master, slave):
     Plot the residuals of observations.
     """
     fig, axs = plt.subplots(1, 2, figsize=(10, 5))
-
     plot_dt_on_map(axs[0], obslist, master, slave=slave, residual=True)
     plot_dt_as_azimuth(axs[1], obslist, residual=True)
     fig.tight_layout()

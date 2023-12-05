@@ -102,6 +102,23 @@ def get_ttime_slowness(model, depth, distance, phase_list):
     return phasename, time, dtdd, dtdh
 
 
+def obslist_to_dataframe(obslist):
+    """
+    Convert list of observations to pandas.DataFrame.
+
+    Parameters
+    ----------
+    obslist : list
+        List of Obs objects.
+
+    Returns
+    -------
+    df : pandas.DataFrame
+        DataFrame of observations.
+    """
+    return pd.DataFrame([vars(obs) for obs in obslist])
+
+
 def dump_obslist(obslist, filename):
     """
     Dump list of observations into a file.
@@ -114,7 +131,7 @@ def dump_obslist(obslist, filename):
         Output filename.
     """
     # Convert to pandas.DataFrame and save to CSV
-    df = pd.DataFrame([vars(obs) for obs in obslist])
+    df = obslist_to_dataframe(obslist)
     df.to_csv(filename, sep=" ", index=False, float_format="%.6f")
 
 
