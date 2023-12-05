@@ -19,6 +19,7 @@ The package depends on the following Python packages:
 - NumPy
 - ObsPy
 - Pandas
+- SciPy
 
 ## Installation
 

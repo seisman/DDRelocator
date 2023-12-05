@@ -10,10 +10,11 @@ requires-python = ">=3.9"
 license = {text = "MIT License"}
 authors = [{name = "Dongdong Tian", email = "dtian@cug.edu.cn"}]
 dependencies = [
-	"matplotlib",
-	"numpy",
-	"obspy",
-	"pandas",
+    "matplotlib",
+    "numpy",
+    "obspy",
+    "pandas",
+    "scipy",
 ]
 dynamic = ["version"]
 
