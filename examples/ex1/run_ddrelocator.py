@@ -31,7 +31,7 @@ obslist = read_obslist(obsfile)
 print(f"Read {len(obslist)} observations from {obsfile}")
 
 # visualize the observations
-plot_dt(obslist, master, show_unused=True)
+plot_dt(obslist, master)
 
 # relocate the slave event relative to the master event
 print("Grid search...  ", end="")

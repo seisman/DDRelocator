@@ -81,7 +81,7 @@ class Obs:
         dtdd,
         dtdh,
         dt,
-        use=1,
+        weight=1.0,
     ):
         """
         Parameters
@@ -106,8 +106,8 @@ class Obs:
             Vertical slowness in s/km.
         dt : float
             Travel time difference.
-        use : int
-            Used in relocation or not. 1 for use, 0 for not use.
+        weight : float
+            Weight for the observation.
 
         Attributes
         ----------
@@ -126,7 +126,7 @@ class Obs:
         self.dtdd = dtdd
         self.dtdh = dtdh
         self.dt = dt
-        self.use = use
+        self.weight = weight
 
 
 class Solution:

@@ -94,7 +94,7 @@ for tr1 in st1:  # loop over traces of the master event
             dtdd,
             dtdh,
             shift,
-            use=1,  # use this observation
+            weight=1.0,  # equal weight
         )
     )
 

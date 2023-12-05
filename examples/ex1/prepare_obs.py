@@ -72,7 +72,7 @@ for sta in stations:
             dtdd,
             dtdh,
             dt,
-            use=1,  # use this observation
+            weight=1.0,  # equal weighting
         )
     )
 

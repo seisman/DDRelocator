@@ -26,11 +26,12 @@ def try_solution(obslist, sol, keep_residual=False):
         obs.dt_pre = obs.dtdd * (distance - obs.distance) + obs.dtdh * sol.ddepth
         obs.residual = obs.dt - obs.dt_pre
 
-    # Only observations with use=True are used to calculate the mean and RMS.
-    residuals = np.array([obs.residual for obs in obslist if obs.use])
-    # tmean is taken as the origin time correction
-    sol.tmean = residuals.mean()
-    sol.misfit = np.sqrt(np.mean((residuals - sol.tmean) ** 2.0))
+    # Calculate the RMS of residuals
+    residuals = np.array([obs.residual for obs in obslist])
+    weights = np.array([obs.weight for obs in obslist])
+    # tmean is the weighted average of residuals, as the origin time correction
+    sol.tmean = np.average(residuals, weights=weights)
+    sol.misfit = np.sqrt(np.average((residuals - sol.tmean) ** 2.0, weights=weights))
 
     # keep dt_pre and residual in the obs object or not
     if keep_residual:
