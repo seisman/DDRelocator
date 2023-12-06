@@ -68,7 +68,7 @@ def try_solution_wrapper(params, *args):
     return sol.misfit
 
 
-def find_solution(master, obslist, params, ncores=-1):
+def find_solution(master, obslist, ranges, ncores=-1):
     """
     Find the best solution.
 
@@ -78,8 +78,8 @@ def find_solution(master, obslist, params, ncores=-1):
         Master event.
     obslist : list
         List of Obs objects.
-    params : SearchParams
-        Search parameters.
+    ranges : tuple
+        Tuple of slice objects for grid search.
     ncores : int, optional
         Number of cores to use. If -1, use all available cores.
 
@@ -90,7 +90,7 @@ def find_solution(master, obslist, params, ncores=-1):
     """
     result = optimize.brute(
         func=try_solution_wrapper,
-        ranges=(params.dlats, params.dlons, params.ddeps),
+        ranges=ranges,
         args=(master, obslist),
         finish=None,
         full_output=True,

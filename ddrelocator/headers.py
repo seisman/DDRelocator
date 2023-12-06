@@ -185,24 +185,3 @@ class Solution:
             depth=master.depth + self.ddepth,
             magnitude=magnitude,
         )
-
-
-class SearchParams:
-    """
-    Class for search parameters.
-    """
-
-    def __init__(self, dlats, dlons, ddeps):
-        """
-        Parameters
-        ----------
-        dlats : slice
-            slice(dlat_min, dlat_max, dlat_step)
-        dlons : slice
-            slice(dlon_min, dlon_max, dlon_step)
-        ddeps : slice
-            slice(ddep_min, ddep_max, ddep_step)
-        """
-        self.dlats = dlats
-        self.dlons = dlons
-        self.ddeps = ddeps
