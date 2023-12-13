@@ -16,10 +16,19 @@ slave = Event("2018-02-02T00:00:00", 36.1678, 139.8095, 53.45, 4.7)
 obsfile = "obs.dat"
 
 # search parameters
+"""
+sol_type = "geographic"  # dlat, dlon and ddepth
 ranges = (
-    slice(-0.002, 0.002, 0.0002),
-    slice(-0.004, 0.004, 0.0002),
-    slice(-1, 1, 0.01),
+    slice(-0.002, 0.002, 0.0002),  # dlat in degree
+    slice(-0.004, 0.004, 0.0002),  # dlon in degree
+    slice(-1, 1, 0.01),  # ddepth in km
+)
+"""
+sol_type = "cylindrical"  # ddist, azimuth, and ddepth
+ranges = (
+    slice(0, 300, 5),  # ddist in meter
+    slice(0, 360, 5),  # az in degree
+    slice(-1000, 1000, 10),  # ddepth in meter
 )
 
 print("Ex1 for ddrelocator")
@@ -36,7 +45,7 @@ plot_dt(obslist, master)
 # relocate the slave event relative to the master event
 print("Grid search...  ", end="")
 start = time.time()
-sol, grid, Jout = find_solution(master, obslist, ranges)
+sol, grid, Jout = find_solution(master, obslist, ranges, sol_type)
 print(f"Done in {time.time() - start:.1f} sec")
 
 # Try the best solution again to add more properties like tmean and residuals
@@ -50,7 +59,7 @@ print("Slave event: ", slave_sol)
 plot_residual(obslist, master, slave_sol)
 
 # visualize the misfit
-plot_misfit(grid, Jout)
+plot_misfit(grid, Jout, sol_type)
 
 # Save the solutions into a pickle file so it can be reused
 dump_solutions(grid, Jout, "solutions.pkl")

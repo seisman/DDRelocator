@@ -1,6 +1,7 @@
 """
 Classes for ddrelocator.
 """
+import numpy as np
 from obspy import UTCDateTime
 
 
@@ -37,7 +38,9 @@ class Event:
         self.id = self.origin.strftime("%Y%m%d%H%M%S")
 
     def __str__(self):
-        return f"{self.origin} {self.latitude} {self.longitude} {self.depth}"
+        return (
+            f"{self.origin} {self.latitude:.5f} {self.longitude:.5f} {self.depth:.4f}"
+        )
 
 
 class Station:
@@ -134,16 +137,18 @@ class Solution:
     Class for solution.
     """
 
-    def __init__(self, dlat, dlon, ddepth):
+    def __init__(self, params, type):
         """
         Parameters
         ----------
-        dlat : float
-            Latitude difference in degrees.
-        dlon : float
-            Longitude difference in degrees.
-        ddepth : float
-            Depth difference in km.
+        params : tuple
+            Solution parameters. The values depend on the solution type.
+            For ``type='geographic'``, the tuple should be (dlat, dlon, ddepth),
+            where dlat and dlon are in degrees and ddepth is in km.
+            For ``type='cylindrical'``, the tuple should be (ddist, az, ddepth),
+            where ddist is in meter, az is in degrees, and ddepth is in meter.
+        type : str
+            Solution type, either 'geographic' or 'cylindrical'.
 
         Attributes
         ----------
@@ -152,18 +157,32 @@ class Solution:
         misfit : float
             RMS of travel time residuals.
         """
-        # location difference
-        self.dlat = dlat
-        self.dlon = dlon
-        self.ddepth = ddepth
+        self.type = type
+        if self.type == "geographic":
+            self.dlat, self.dlon, self.ddepth = params
+        elif self.type == "cylindrical":
+            self.ddist, self.az, self.ddepth = params
+        else:
+            raise ValueError("Unrecognized solution type '{type}'.")
 
     def __str__(self):
-        result = f"dlat: {self.dlat}, dlon: {self.dlon}, ddepth: {self.ddepth}"
-        if hasattr(self, "tmean"):
-            result += f", tmean: {self.tmean:.3f}"
-        if hasattr(self, "misfit"):
-            result += f", misfit: {self.misfit:.3f}"
-        return result
+        if self.type == "geographic":
+            result = [
+                f"dlat: {self.dlat}°",
+                f"dlon: {self.dlon}°",
+                f"ddepth: {self.ddepth} km",
+            ]
+        elif self.type == "cylindrical":
+            result = [
+                f"ddist: {self.ddist} m",
+                f"az: {self.az}°",
+                f"ddepth: {self.ddepth} m",
+            ]
+
+        for attr in ["tmean", "misfit"]:
+            if hasattr(self, attr):
+                result.append(f"{attr}: {getattr(self, attr):.3f}")
+        return "\n".join(result)
 
     def to_event(self, master, slave=None):
         """
@@ -176,12 +195,26 @@ class Solution:
         slave : Event
             Slave event.
         """
-        origin = master.origin if slave is None else slave.origin
+        origin = (master.origin if slave is None else slave.origin) + self.tmean
         magnitude = master.magnitude if slave is None else slave.magnitude
+        if self.type == "geographic":
+            latitude = master.latitude + self.dlat
+            longitude = master.longitude + self.dlon
+            depth = master.depth + self.ddepth
+        elif self.type == "cylindrical":
+            earth_radius = 6371.0  # km
+            ddist = self.ddist / 1000.0  # convert distance from meter to km
+            azimuth = np.radians(self.az)  # convert azimuth from degree to radian
+            latitude, longitude = np.radians([master.latitude, master.longitude])
+            latitude += ddist / earth_radius * np.cos(azimuth)
+            longitude += ddist / earth_radius * np.sin(azimuth) / np.cos(latitude)
+            latitude, longitude = np.degrees([latitude, longitude])
+            depth = master.depth + self.ddepth / 1000.0
+
         return Event(
-            origin=origin + self.tmean,
-            latitude=master.latitude + self.dlat,
-            longitude=master.longitude + self.dlon,
-            depth=master.depth + self.ddepth,
+            origin=origin,
+            latitude=latitude,
+            longitude=longitude,
+            depth=depth,
             magnitude=magnitude,
         )

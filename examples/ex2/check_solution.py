@@ -2,11 +2,9 @@
 ex2: Check a solution.
 """
 import matplotlib.pyplot as plt
-import numpy as np
 from ddrelocator import Event, Solution, try_solution
 from ddrelocator.helpers import read_obslist
 from obspy import read
-from obspy.geodetics import kilometers2degrees
 
 # Event information
 ev1 = Event("2003-07-02T00:47:11.860", -3.643, 102.060, 75.2, 5.1)
@@ -15,23 +13,15 @@ ev2 = Event("1995-11-14T06:32:55.750", -3.682, 101.924, 57.0, 5.1)
 # read obslist
 obslist = read_obslist("obs-2003-1995.dat")
 
-# Yang et al., 2021, SRL
-"""
-ddist, daz, tmean = 251.0, 272.0, 1.9186  # ddist in meter
-sol = Solution(
-    dlat=kilometers2degrees(ddist * np.cos(np.deg2rad(daz)) / 1000.0),
-    dlon=kilometers2degrees(ddist * np.sin(np.deg2rad(daz)) / 1000.0),
-    ddepth=-0.5,
-)
-"""
-# Zhang & Wen, 2023, SRL
-ddist, daz, tmean = 407.0, 137.0, 1.9227  # ddist in meter
-sol = Solution(
-    dlat=kilometers2degrees(ddist * np.cos(np.deg2rad(daz)) / 1000.0),
-    dlon=kilometers2degrees(ddist * np.sin(np.deg2rad(daz)) / 1000.0),
-    ddepth=0.058,
-)
+# Check two solutions:
+#
+# 1. Yang et al., 2021, SRL
+# ddist, az, ddepth, tmean = 251.0, 272.0, -500, 1.9186
 
+# 2. Zhang & Wen, 2023, SRL
+ddist, az, ddepth, tmean = 407.0, 137.0, 58, 1.9227
+
+sol = Solution((ddist, az, ddepth), type="cylindrical")
 try_solution(ev1, obslist, sol, keep_residual=True)
 for obs in obslist:
     obs.residual += sol.tmean

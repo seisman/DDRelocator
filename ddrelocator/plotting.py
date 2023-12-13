@@ -133,7 +133,7 @@ def plot_residual(obslist, master, slave):
     plt.show()
 
 
-def plot_misfit(grid, Jout):
+def plot_misfit(grid, Jout, sol_type):
     """
     Plot the misfit of solutions.
 
@@ -141,7 +141,11 @@ def plot_misfit(grid, Jout):
     """
     fig, axs = plt.subplots(nrows=1, ncols=3, figsize=(15, 4))
 
-    names = ["latitude", "longitude", "depth"]
+    if sol_type == "geographic":
+        names = ["latitude (degree)", "longitude (degree)", "ddepth (km)"]
+    elif sol_type == "cylindrical":
+        names = ["distance (m)", "azimuth (degree)", "ddepth (m)"]
+
     i = 0
     for xi, yi, zi in ((0, 1, 2), (0, 2, 1), (1, 2, 0)):
         ax = axs[i]

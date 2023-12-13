@@ -12,7 +12,7 @@ slave = Event("2018-02-02T00:00:00", 36.1678, 139.8095, 53.45, 4.7)
 
 # The solution to check.
 # It can be the best solution from gridsearch or any other solution.
-sol = Solution(-0.001, 0.002, 0.0)
+sol = Solution((-0.001, 0.002, 0.0), type="geographic")
 
 # read observations from a file
 obslist = read_obslist("obs.dat")
