@@ -8,8 +8,8 @@ from obspy.taup import TauPyModel
 
 # 1. Define a master event and a slave event.
 #
-# The master event is the reference event, and the slave event is the event
-# to be relocated, relative to the master event.
+# The master event is the reference event, and the slave event is the event to be
+# relocated, relative to the master event.
 #
 # Event(origin, latitude, longitude, depth, magnitude)
 #
@@ -79,7 +79,7 @@ for sta in stations:
 
 # 4. Dump the observations into a file.
 #
-# We can use the read_obslist() function to read the observations back from a file
-# to a list. It's useful when we want to modify the observations manually.
+# We can use the read_obslist() function to read the observations back from a file to a
+# list. It's useful when we want to modify the observations manually.
 print(f"Writing {len(obslist)} observations into file obs.dat")
 dump_obslist(obslist, "obs.dat")

@@ -143,11 +143,11 @@ class Solution:
         Parameters
         ----------
         params : tuple
-            Solution parameters. The values depend on the solution type.
-            For ``type='geographic'``, the tuple should be (dlat, dlon, ddepth),
-            where dlat and dlon are in degrees and ddepth is in km.
-            For ``type='cylindrical'``, the tuple should be (ddist, az, ddepth),
-            where ddist is in meter, az is in degrees, and ddepth is in meter.
+            Solution parameters. The values depend on the solution type. For
+            ``type='geographic'``, the tuple should be (dlat, dlon, ddepth), where dlat
+            and dlon are in degrees and ddepth is in km. For ``type='cylindrical'``, the
+            tuple should be (ddist, az, ddepth), where ddist is in meter, az is in
+            degrees, and ddepth is in meter.
         type : str
             Solution type, either 'geographic' or 'cylindrical'.
 
@@ -168,18 +168,11 @@ class Solution:
 
     def __str__(self):
         if self.type == "geographic":
-            result = [
-                f"dlat: {self.dlat}°",
-                f"dlon: {self.dlon}°",
-                f"ddepth: {self.ddepth} km",
-            ]
+            result = [f"dlat: {self.dlat}°", f"dlon: {self.dlon}°"]
         elif self.type == "cylindrical":
-            result = [
-                f"ddist: {self.ddist} m",
-                f"az: {self.az}°",
-                f"ddepth: {self.ddepth} m",
-            ]
+            result = [f"ddist: {self.ddist} m", f"az: {self.az}°"]
 
+        result.append(f"ddepth: {self.ddepth} km")
         for attr in ["tmean", "misfit"]:
             if hasattr(self, attr):
                 result.append(f"{attr}: {getattr(self, attr):.3f}")

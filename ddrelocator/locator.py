@@ -69,8 +69,8 @@ def try_solution_wrapper(params, *args):
     Parameters
     ----------
     params : tuple
-        Parameters for brute force search. It's also the parameters
-        for the solution to be tested.
+        Parameters for brute force search. It's also the parameters for the solution to
+        be tested.
     args : tuple
         Tuple of (master, obslist, sol_type).
 

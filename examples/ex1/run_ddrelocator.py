@@ -13,10 +13,10 @@ master = Event("2018-02-01T00:00:00", 36.1688, 139.8075, 53.45, 4.7)
 # Information of the slave event [unknown]
 slave = Event("2018-02-02T00:00:00", 36.1678, 139.8095, 53.45, 4.7)
 
-# observation file
+# Observation file
 obsfile = "obs.dat"
 
-# search parameters
+# Search parameters
 """
 sol_type = "geographic"  # dlat, dlon and ddepth
 ranges = (
@@ -36,14 +36,14 @@ print("Ex1 for ddrelocator")
 print("Master event: ", master)
 print("Slave event: ", slave)
 
-# read observations from a file
+# Read observations from a file
 obslist = read_obslist(obsfile)
 print(f"Read {len(obslist)} observations from {obsfile}")
 
-# visualize the observations
+# Visualize the observations
 plot_dt(obslist, master)
 
-# relocate the slave event relative to the master event
+# Relocate the slave event relative to the master event
 print("Grid search...  ", end="")
 start = time.time()
 sol, grid, Jout = find_solution(master, obslist, ranges, sol_type)
@@ -51,15 +51,15 @@ print(f"Done in {time.time() - start:.1f} sec")
 
 # Try the best solution again to add more properties like tmean and residuals
 try_solution(master, obslist, sol, keep_residual=True)
-# the best location for the slave event
+# The best location for the slave event
 slave_sol = sol.to_event(master, slave)
 print("Best solution:", sol)
 print("Slave event: ", slave_sol)
 
-# visualize the residuals
+# Visualize the residuals
 plot_residual(obslist, master, slave_sol)
 
-# visualize the misfit
+# Visualize the misfit
 plot_misfit(grid, Jout, sol_type)
 
 # Save the solutions into a pickle file so it can be reused

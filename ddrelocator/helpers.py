@@ -44,8 +44,8 @@ def get_ttime_slowness(model, depth, distance, phase_list):
     """
     Get travel time, horizontal slowness, and vertical slowness for a given phase.
 
-    If multiple phases are given or multiple arrivals are found, only the first one
-    is used.
+    If multiple phases are given or multiple arrivals are found, only the first one is
+    used.
 
     Parameters
     ----------
@@ -73,7 +73,6 @@ def get_ttime_slowness(model, depth, distance, phase_list):
     -----
     The vertical slowness is defined as the negative of the vertical derivative of
     travel time.
-
     """
     radius = 6371.0
     arrivals = model.get_travel_times(
