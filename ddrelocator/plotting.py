@@ -1,6 +1,7 @@
 """
 Visualization functions.
 """
+
 import matplotlib.pyplot as plt
 import numpy as np
 from ddrelocator.helpers import obslist_to_dataframe

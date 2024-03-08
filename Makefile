@@ -16,12 +16,12 @@ install:
 	python -m pip install --no-deps -e .
 
 check:
-	ruff format --check ${FORMAT_FILES}
 	ruff check ${FORMAT_FILES}
+	ruff format --check ${FORMAT_FILES}
 
 format:
+	ruff check --fix --exit-zero ${FORMAT_FILES}
 	ruff format ${FORMAT_FILES}
-	ruff check --fix ${FORMAT_FILES}
 
 clean:
 	find . -name "*.pyc" -exec rm -v {} +

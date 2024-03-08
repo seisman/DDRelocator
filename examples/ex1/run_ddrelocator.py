@@ -1,6 +1,7 @@
 """
 ex1: Run ddrelocator.
 """
+
 import time
 
 from ddrelocator import Event, find_solution, try_solution

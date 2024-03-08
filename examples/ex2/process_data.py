@@ -1,6 +1,7 @@
 """
 ex2: process miniseed data and save as SAC format.
 """
+
 from pathlib import Path
 
 from ddrelocator.headers import Event

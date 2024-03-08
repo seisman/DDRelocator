@@ -1,6 +1,7 @@
 """
 Main functions for relocation.
 """
+
 import numpy as np
 from ddrelocator.headers import Solution
 from ddrelocator.helpers import distaz

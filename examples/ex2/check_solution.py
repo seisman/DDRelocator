@@ -1,6 +1,7 @@
 """
 ex2: Check a solution.
 """
+
 import matplotlib.pyplot as plt
 from ddrelocator import Event, Solution, try_solution
 from ddrelocator.helpers import read_obslist

@@ -1,6 +1,7 @@
 """
 Helper functions for ddrelocator.
 """
+
 import pickle
 
 import numpy as np

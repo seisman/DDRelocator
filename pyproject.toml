@@ -25,6 +25,15 @@ platforms = ["Any"]
 local_scheme = "node-and-date"
 fallback_version = "999.999.999+unknown"
 
+[tool.ruff]
+line-length = 88
+output-format = "full"
+
+[tool.ruff.format]
+line-ending = "lf"
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+
 [tool.ruff.lint]
 select = [
     "E",  # pycodestyle
@@ -39,8 +48,8 @@ ignore = [
     "PLR2004",  # Magic value used in comparison
 ]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]  # Ignore `F401` (unused-import) in all `__init__.py` files
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 known-third-party = ["ddrelocator"]

@@ -1,6 +1,7 @@
 """
 ex1: Prepare synthetic observations.
 """
+
 from ddrelocator import Event, Obs, Station
 from ddrelocator.helpers import distaz, dump_obslist, get_ttime_slowness
 from obspy.taup import TauPyModel

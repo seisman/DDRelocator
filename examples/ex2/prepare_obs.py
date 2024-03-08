@@ -1,6 +1,7 @@
 """
 ex2: Prepare observations.
 """
+
 import matplotlib.pyplot as plt
 import numpy as np
 from ddrelocator import Event, Obs
