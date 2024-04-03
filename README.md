@@ -26,7 +26,7 @@ The package depends on the following Python packages:
 ```
 $ git clone https://github.com/seisman/DDRelocator.git
 $ cd DDRelocator
-$ pip install -r requirements.txt
+$ python -m pip install -r requirements.txt
 $ make install
 ```
 
