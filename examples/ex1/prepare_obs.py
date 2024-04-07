@@ -53,6 +53,8 @@ for sta in stations:
     dist, az = distaz(master.latitude, master.longitude, sta.latitude, sta.longitude)
     # get phase name, travel time, horizontal slowness and vertical slowness
     phasename, t0, dtdd, dtdh = get_ttime_slowness(model, master.depth, dist, [phase])
+    if phasename is None:  # no arrivals
+        continue
 
     # calculate the traveltime of the slave event
     dist1, _ = distaz(slave.latitude, slave.longitude, sta.latitude, sta.longitude)
