@@ -28,7 +28,7 @@ def try_solution(master, obslist, sol, keep_residual=False):
         # Convert the solution to absolute location
         latitude = master.latitude + sol.dlat
         longitude = master.longitude + sol.dlon
-        # For all observations, calculate distance differentce and traveltime difference
+        # For all observations, calculate distance difference and traveltime difference
         for obs in obslist:
             distance = distaz(latitude, longitude, obs.latitude, obs.longitude)[0]
             obs.dt_pre = obs.dtdd * (distance - obs.distance) + obs.dtdh * sol.ddepth
