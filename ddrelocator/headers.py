@@ -36,7 +36,7 @@ class Event:
     latitude: float
     longitude: float
     depth: float
-    magnitude: float
+    magnitude: float  # unused
 
     def __post_init__(self):
         self.origin = UTCDateTime(self.origin)
