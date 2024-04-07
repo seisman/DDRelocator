@@ -71,8 +71,20 @@ def get_ttime_slowness(model, depth, distance, phase_list):
 
     Notes
     -----
-    The vertical slowness is defined as the negative of the vertical derivative of
-    travel time.
+    The vertical slowness is defined as:
+
+            eta = - p / r / tan(theta)
+
+    - p is the horizontal slowness in second/radian
+    - r is the radius at the source depth, i.e., R - h
+    - theta is the takeoff angle at the source
+
+    Need to be cautious with the minus sign, because in TauP, takeoff angle is 0 for
+    vertical down-going ray and 180 for vertical up-going ray.
+
+    Here is an example to verify the correctness of the sign. For an epicentral distance
+    of 60 degrees, the P travel time for sources at 50 and 51 km are 601.3345 and
+    601.2268 s, respectively. So, travel time decreases when source depth increases.
     """
     radius = 6371.0
     arrivals = model.get_travel_times(
@@ -84,8 +96,7 @@ def get_ttime_slowness(model, depth, distance, phase_list):
     )
 
     if len(arrivals) == 0:
-        msg = f"No arrival found for depth={depth} and distance={distance}."
-        raise ValueError(msg)
+        return None, None, None, None
 
     # only use the first arrival
     arrival = arrivals[0]
@@ -97,7 +108,7 @@ def get_ttime_slowness(model, depth, distance, phase_list):
     dtdd = arrival.ray_param_sec_degree
     # takeoff angle. zero for vertical down-going ray; 180 for vertical up-going ray.
     takeoff_angle = np.deg2rad(arrival.takeoff_angle)
-    # vertical slowness.
+    # vertical slowness. Note the minus sign at the beginning.
     dtdh = -dtdd * 180.0 / np.pi / (radius - depth) / np.tan(takeoff_angle)
     return phasename, time, dtdd, dtdh
 
