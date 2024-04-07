@@ -88,8 +88,7 @@ def event_get_waveforms(
         **restriction_kwargs,
     )
 
-    # For unknown reasons, providers=None does not work.
-    mdl = MassDownloader(providers=["IRIS", "SCEDC", "AUSPASS"])
+    mdl = MassDownloader(providers=None)
     mdl.download(
         domain,
         restriction,
@@ -112,7 +111,7 @@ restriction_kwargs = dict(
     limit_stations_to_inventory=inv,
     reject_channels_with_gaps=False,
     minimum_length=0.5,
-    channel="BHZ",
+    channel="BH?",
     sanitize=True,
 )
 
@@ -123,7 +122,7 @@ for ev in cat:
         minradius=0.0,
         maxradius=30,
         starttime=origin.time - 60,
-        endtime=origin.time + 600,
+        endtime=origin.time + 1200,
         restriction_kwargs=restriction_kwargs,
     )
     event_get_waveforms(
@@ -131,7 +130,7 @@ for ev in cat:
         minradius=30,
         maxradius=90,
         starttime=origin.time + 300,
-        endtime=origin.time + 900,
+        endtime=origin.time + 1800,
         restriction_kwargs=restriction_kwargs,
     )
     event_get_waveforms(
@@ -139,6 +138,6 @@ for ev in cat:
         minradius=90,
         maxradius=180,
         starttime=origin.time + 600,
-        endtime=origin.time + 1400,
+        endtime=origin.time + 2000,
         restriction_kwargs=restriction_kwargs,
     )
