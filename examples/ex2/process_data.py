@@ -37,20 +37,24 @@ common_stations = set(f"{tr.stats.network}.{tr.stats.station}" for tr in st1) & 
     f"{tr.stats.network}.{tr.stats.station}" for tr in st2
 )
 
-# only keep the common stations for the two event
+# only keep the common stations for the two events
 for st in (st1, st2):
     for tr in st:
         if f"{tr.stats.network}.{tr.stats.station}" not in common_stations:
             st.remove(tr)
 
 for st, inv, ev in [(st1, inv1, ev1), (st2, inv2, ev2)]:
+    # Merge and remove instrumental responses to WWSP
     st.merge(fill_value="interpolate")
-    st.detrend("demean")
-    st.detrend("linear")
-    st.taper(max_percentage=0.05, type="hann")
-    st.remove_response(inventory=inv, output="DISP", pre_filt=(0.01, 0.02, 8, 10))
+    st.remove_response(
+        inventory=inv,
+        output="DISP",
+        pre_filt=(0.01, 0.02, 8, 10),
+        zero_mean=True,
+        taper=True,
+        taper_fraction=0.05,
+    )
     st.simulate(paz_simulate=paz_wwsp)
-    st.filter("bandpass", freqmin=0.6, freqmax=3.0, corners=2, zerophase=False)
 
     Path(f"SAC/{ev.id}").mkdir(parents=True, exist_ok=True)
     for tr in st:
@@ -66,15 +70,21 @@ for st, inv, ev in [(st1, inv1, ev1), (st2, inv2, ev2)]:
         sac.iztype = "io"
 
         # set station information
-        # Sometimes, the returned inventory has an incorrect starttime/endtime,
-        # which causes issues below.
-        # coord = inv.get_coordinates(tr.id, datetime=ev.origin)
-        coord = inv.get_coordinates(tr.id)
+        coord = inv.get_coordinates(tr.id, datetime=ev.origin)
         sac.stla = coord["latitude"]
         sac.stlo = coord["longitude"]
         sac.stel = coord["elevation"]
         sac.stdp = coord["local_depth"]
 
+        # set channel orientation
+        orient = inv.get_orientation(tr.id, datetime=ev.origin)
+        # Need to cautious with the different definitions of 'dip'
+        # In ObsPy, 'dip' is degrees, down from horizontal [-90, 90]
+        # In SAC, 'dip' is degrees, down from vertical-up [0, 180]
+        sac.cmpinc = orient["dip"] + 90.0
+        sac.cmpaz = orient["azimuth"]
+
         # set SAC header
         sac.lcalda = True  # calculate distance, azimuth and back-azimuth in saving
+        print(f"SAC/{ev.id}/{tr.id}.SAC")
         sac.write(f"SAC/{ev.id}/{tr.id}.SAC")
