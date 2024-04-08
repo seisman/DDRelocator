@@ -98,6 +98,8 @@ class Obs:
         Vertical slowness in s/km.
     dt
         Travel time difference.
+    cc
+        Cross-correlation coefficient. cc=0.0 means no cross-correlation is applied.
     weight
         Weight for the observation.
 
@@ -119,6 +121,7 @@ class Obs:
     dtdd: float
     dtdh: float
     dt: float
+    cc: float = 0.0
     weight: float = 1.0
 
 
