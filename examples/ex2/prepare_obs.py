@@ -30,8 +30,13 @@ def search_phase_pairs(phase, twin, cc_min, filter_kwargs):
     st2 = read(f"SAC/{ev2.id}/*Z.SAC").filter(**filter_kwargs)
 
     for tr1 in st1:  # Loop over traces of the master event
-        # Find the slave event trace with the same seed id
-        st_match = st2.select(id=tr1.id)
+        # Find the slave event trace with the same network/station/channel
+        # We can't use the SEED ID here because location code may change.
+        st_match = st2.select(
+            network=tr1.stats.network,
+            station=tr1.stats.station,
+            channel=tr1.stats.channel,
+        )
         match len(st_match):
             case 0:  # no matched trace. skip.
                 print(f"{tr1.id}: no matched trace. Skipped.")
@@ -105,7 +110,7 @@ def search_phase_pairs(phase, twin, cc_min, filter_kwargs):
 filter_kwargs = dict(
     type="bandpass", freqmin=0.5, freqmax=3.0, corners=4, zerophase=False
 )
-obslist = search_phase_pairs("P", (0, 5.0), 0.9, filter_kwargs)
+obslist = search_phase_pairs("P", (0.0, 5.0), 0.9, filter_kwargs)
 # obslist = search_phase_pairs("pP", (0, 5.0), 0.9, filter_kwargs)
 # obslist = search_phase_pairs("sP", (0, 5.0), 0.9, filter_kwargs)
 # obslist = search_phase_pairs("PcP", (0, 5.0), 0.9, filter_kwargs)
