@@ -18,6 +18,9 @@ obslist = read_obslist("obs-2003-1995.dat")
 #
 # 1. Yang et al., 2021, SRL
 # ddist, az, ddepth, tmean = 251.0, 272.0, -500, 1.9186
+# ddist, az, ddepth, tmean = 251.0, 272.0, 500, 1.9186
+# ddist, az, ddepth, tmean = 251.0, 272.0, -499, 1.9695
+# ddist, az, ddepth, tmean = 251.0, 272.0, 499, 1.9695
 
 # 2. Zhang & Wen, 2023, SRL
 ddist, az, ddepth, tmean = 407.0, 137.0, 58, 1.9227
@@ -31,10 +34,13 @@ for obs in obslist:
     obs.residual -= sol.tmean
 
 # read traces for plotting
-st1 = read(f"SAC/{ev1.id}/*.SAC")
-st2 = read(f"SAC/{ev2.id}/*.SAC")
+st1 = read(f"SAC/{ev1.id}/*Z.SAC")
+st2 = read(f"SAC/{ev2.id}/*Z.SAC")
 
-t0, t1 = -2.0, 8.0
+st1.filter("bandpass", freqmin=0.5, freqmax=3.0, corners=4, zerophase=False)
+st2.filter("bandpass", freqmin=0.5, freqmax=3.0, corners=4, zerophase=False)
+
+t0, t1 = -4.0, 8.0
 fig, ax = plt.subplots(1, 1, figsize=(6, 30))
 ax.get_yaxis().set_visible(False)
 
@@ -50,8 +56,8 @@ for obs in obslist:
     tr1.normalize()
     tr2.normalize()
 
-    ax.plot(tr1.times() + t0, tr1.data * 0.5 + count, "k", lw=1)
-    ax.plot(tr2.times() + t0, tr2.data * 0.5 + count, "b", lw=1)
+    ax.plot(tr1.times() + t0, tr1.data * 0.5 + count, "k", lw=0.75)
+    ax.plot(tr2.times() + t0, tr2.data * 0.5 + count, "b", lw=0.75)
     ax.text(
         t0 - 0.5,
         count,
@@ -67,6 +73,10 @@ for obs in obslist:
         ha="left",
         va="center",
         fontsize=8,
+    )
+    ax.set_title(
+        f"Event: {ev1.id} (black) / {ev2.id} (blue)\n"
+        f"Solution: {sol.ddist:.1f} m, {sol.az:.1f} deg, {sol.ddepth:.0f} m, {sol.tmean:.4f} s"
     )
 
     count += 1
