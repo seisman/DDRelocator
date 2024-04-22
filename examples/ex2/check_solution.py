@@ -17,10 +17,10 @@ obslist = read_obslist("obs-2003-1995.dat")
 # Check two solutions:
 #
 # 1. Yang et al., 2021, SRL
-# ddist, az, ddepth, tmean = 251.0, 272.0, -500, 1.9186
-# ddist, az, ddepth, tmean = 251.0, 272.0, 500, 1.9186
+# The raw solution
 # ddist, az, ddepth, tmean = 251.0, 272.0, -499, 1.9695
-# ddist, az, ddepth, tmean = 251.0, 272.0, 499, 1.9695
+# The solution using new event as reference
+ddist, az, ddepth, tmean = 251.0, 92.0, 499, 1.9695
 
 # 2. Zhang & Wen, 2023, SRL
 ddist, az, ddepth, tmean = 407.0, 137.0, 58, 1.9227
