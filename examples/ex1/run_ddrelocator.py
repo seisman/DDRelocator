@@ -53,7 +53,8 @@ print(f"Done in {time.time() - start:.1f} sec")
 try_solution(master, obslist, sol, keep_residual=True)
 # The best location for the slave event
 slave_sol = sol.to_event(master, slave)
-print("Best solution:", sol)
+print("Best solution:")
+print(sol)
 print("Slave event: ", slave_sol)
 
 # Visualize the residuals
