@@ -35,7 +35,7 @@ def distaz(lat1, lon1, lat2, lon2):
     az : float
         Azimuth from point 1 to point 2 in degree.
     """
-    dist, az, _ = gps2dist_azimuth(lat1, lon1, lat2, lon2)
+    dist, az, _ = gps2dist_azimuth(lat1, lon1, lat2, lon2)  # distance is in meter
     dist = kilometers2degrees(dist / 1000.0)
     return dist, az
 
@@ -73,7 +73,7 @@ def get_ttime_slowness(model, depth, distance, phase_list):
     -----
     The vertical slowness is defined as:
 
-            eta = - p / r / tan(theta)
+        eta = - p / r / tan(theta)
 
     - p is the horizontal slowness in second/radian
     - r is the radius at the source depth, i.e., R - h
@@ -160,7 +160,7 @@ def read_obslist(filename):
     obslist : list
         List of Obs objects.
     """
-    df = pd.read_csv(filename, delim_whitespace=True, comment="#")
+    df = pd.read_csv(filename, sep=r"\s+", comment="#")
     return [Obs(*(df.values.tolist()[i])) for i in range(len(df.index))]
 
 

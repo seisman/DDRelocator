@@ -97,7 +97,7 @@ class Obs:
     dtdh
         Vertical slowness in s/km.
     dt
-        Travel time difference.
+        Travel time difference in seconds.
     cc
         Cross-correlation coefficient. cc=0.0 means no cross-correlation is applied.
     weight
@@ -162,11 +162,18 @@ class Solution:
     def __str__(self):
         match self.type:
             case "geographic":
-                result = [f"dlat: {self.dlat}°", f"dlon: {self.dlon}°"]
+                result = [
+                    f"dlat: {self.dlat}°",
+                    f"dlon: {self.dlon}°",
+                    f"ddepth: {self.ddepth} km",
+                ]
             case "cylindrical":
-                result = [f"ddist: {self.ddist} m", f"az: {self.az}°"]
+                result = [
+                    f"ddist: {self.ddist} m",
+                    f"az: {self.az}°",
+                    f"ddepth: {self.ddepth} m",
+                ]
 
-        result.append(f"ddepth: {self.ddepth} km")
         for attr in ["tmean", "misfit"]:
             if hasattr(self, attr):
                 result.append(f"{attr}: {getattr(self, attr):.3f}")
