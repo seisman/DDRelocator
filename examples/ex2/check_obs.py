@@ -8,10 +8,6 @@ import matplotlib.pyplot as plt
 from ddrelocator.helpers import read_events_from_csv, read_obslist
 from obspy import read
 
-ev1, ev2 = read_events_from_csv("catalog.csv")
-print("Event 1: ", ev1)
-print("Event 2: ", ev2)
-
 # t0, t1 = -4.0, 8.0
 t0, t1 = 0, 15.0
 freqmin, freqmax, corners = 0.5, 3.0, 4
@@ -22,6 +18,10 @@ if len(sys.argv) != 2:
 
 obsfile = sys.argv[1]
 obslist = read_obslist(obsfile)
+
+ev1, ev2 = read_events_from_csv("catalog.csv")
+print("Event 1: ", ev1)
+print("Event 2: ", ev2)
 
 # read traces for plotting
 st1 = read(f"SAC/{ev1.id}/*Z.SAC")
