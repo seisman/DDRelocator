@@ -3,13 +3,15 @@ ex2: Check a solution.
 """
 
 import matplotlib.pyplot as plt
-from ddrelocator import Event, Solution, try_solution
-from ddrelocator.helpers import read_obslist
+from ddrelocator import Solution, try_solution
+from ddrelocator.helpers import read_events_from_csv, read_obslist
 from obspy import read
 
-# Event information
-ev1 = Event("2003-07-02T00:47:11.860", -3.643, 102.060, 75.2, 5.1)
-ev2 = Event("1995-11-14T06:32:55.750", -3.682, 101.924, 57.0, 5.1)
+# Read the event pair
+ev1, ev2 = read_events_from_csv("catalog.csv")
+print("Event 1: ", ev1)
+print("Event 2: ", ev2)
+
 
 # read obslist
 obslist = read_obslist("obs-2003-1995.dat")

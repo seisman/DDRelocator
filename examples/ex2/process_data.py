@@ -4,7 +4,7 @@ ex2: process miniseed data and save as SAC format.
 
 from pathlib import Path
 
-from ddrelocator.headers import Event
+from helpers import read_events_from_csv
 from obspy import read, read_inventory
 from obspy.io.sac import SACTrace
 
@@ -22,12 +22,15 @@ paz_wwsp = {
     "sensitivity": 1.0,
 }
 
+# Read the event pair
+ev1, ev2 = read_events_from_csv("catalog.csv")
+print("Event 1: ", ev1)
+print("Event 2: ", ev2)
+
 # read waveforms and inventories of the two events
-ev1 = Event("2003-07-02T00:47:11.860", -3.643, 102.060, 75.2, 5.1)
 st1 = read(f"mseed/{ev1.id}/*.mseed")
 inv1 = read_inventory(f"stations/{ev1.id}/*.xml")
 
-ev2 = Event("1995-11-14T06:32:55.750", -3.682, 101.924, 57.0, 5.1)
 st2 = read(f"mseed/{ev2.id}/*.mseed")
 inv2 = read_inventory(f"stations/{ev2.id}/*.xml")
 

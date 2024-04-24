@@ -5,8 +5,12 @@ ex2: Run ddrelocator.
 import time
 
 from ddrelocator import Event, find_solution, try_solution
-from ddrelocator.helpers import dump_solutions, read_obslist
+from ddrelocator.helpers import dump_solutions, read_events_from_csv, read_obslist
 from ddrelocator.plotting import plot_dt, plot_misfit, plot_residual
+
+ev1, ev2 = read_events_from_csv("catalog.csv")
+print("Event 1: ", ev1)
+print("Event 2: ", ev2)
 
 # Information of the master event [known]
 master = Event("2003-07-02T00:47:11.860", -3.643, 102.060, 75.2, 5.1)

@@ -3,15 +3,21 @@ ex2: Prepare observations.
 """
 
 import numpy as np
-from ddrelocator import Event, Obs
-from ddrelocator.helpers import distaz, dump_obslist, get_ttime_slowness
+from ddrelocator import Obs
+from ddrelocator.helpers import (
+    distaz,
+    dump_obslist,
+    get_ttime_slowness,
+    read_events_from_csv,
+)
 from obspy import read
 from obspy.signal.cross_correlation import correlate_template
 from obspy.taup import TauPyModel
 
-# Event information from catalog. The later one (ev1) is the master event.
-ev1 = Event("2003-07-02T00:47:11.860", -3.643, 102.060, 75.2, 5.1)
-ev2 = Event("1995-11-14T06:32:55.750", -3.682, 101.924, 57.0, 5.1)
+# Read the event pair
+ev1, ev2 = read_events_from_csv("catalog.csv")
+print("Event 1: ", ev1)
+print("Event 2: ", ev2)
 
 
 # Global variables

@@ -6,7 +6,7 @@ import pickle
 
 import numpy as np
 import pandas as pd
-from ddrelocator.headers import Obs
+from ddrelocator.headers import Event, Obs
 from obspy.geodetics import gps2dist_azimuth, kilometers2degrees
 
 
@@ -178,3 +178,35 @@ def load_solutions(filename):
     """
     with open(filename, "rb") as f:
         return pickle.load(f)
+
+
+def read_events_from_csv(filename):
+    """
+    Read the events from a CSV file.
+
+    The CSV file should contain the following columns:
+
+    - time
+    - longitude
+    - latitude
+    - depth (in km)
+    - magnitude
+
+    Usually, the CSV file contains two events. The first event is the master event, the
+    second event is the slave event.
+
+    Parameters
+    ----------
+    filename : str
+        The filename of the CSV file.
+
+    Returns
+    -------
+    events
+        List of events.
+    """
+    df = pd.read_csv(filename, comment="#")
+    return [
+        Event(ev.time, ev.longitude, ev.latitude, ev.depth, ev.magnitude)
+        for _, ev in df.iterrows()
+    ]

@@ -5,13 +5,12 @@ Check the observations by plotting the traces.
 import sys
 
 import matplotlib.pyplot as plt
-from ddrelocator import Event
-from ddrelocator.helpers import read_obslist
+from ddrelocator.helpers import read_events_from_csv, read_obslist
 from obspy import read
 
-# Event information from catalog. The later one (ev1) is the master event.
-ev1 = Event("2003-07-02T00:47:11.860", -3.643, 102.060, 75.2, 5.1)
-ev2 = Event("1995-11-14T06:32:55.750", -3.682, 101.924, 57.0, 5.1)
+ev1, ev2 = read_events_from_csv("catalog.csv")
+print("Event 1: ", ev1)
+print("Event 2: ", ev2)
 
 # t0, t1 = -4.0, 8.0
 t0, t1 = 0, 15.0
