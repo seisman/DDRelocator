@@ -187,8 +187,8 @@ def read_events_from_csv(filename):
     The CSV file should contain the following columns:
 
     - time
-    - longitude
     - latitude
+    - longitude
     - depth (in km)
     - magnitude
 
@@ -207,6 +207,12 @@ def read_events_from_csv(filename):
     """
     df = pd.read_csv(filename, comment="#")
     return [
-        Event(ev.time, ev.longitude, ev.latitude, ev.depth, ev.magnitude)
+        Event(
+            origin=ev.time,
+            latitude=ev.latitude,
+            longitude=ev.longitude,
+            depth=ev.depth,
+            magnitude=ev.magnitude,
+        )
         for _, ev in df.iterrows()
     ]
